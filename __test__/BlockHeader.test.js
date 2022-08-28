@@ -15,7 +15,7 @@ test('Decode block header with only coinbase transaction', () => {
         // Transactions
         '01020000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff03510101ffffffff0200f2052a0100000016001452fff61529f49be656745e9b01531167a94762420000000000000000266a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf90120000000000000000000000000000000000000000000000000000000000000000000000000';
 
-    let header = new BlockHeader(rawHeader, 'BigEndian');
+    let header = BlockHeader.create(rawHeader, 'BigEndian')
 
     let decodedHeader = header.getBlockHeader();
     expect(decodedHeader.version).toBe(32);    

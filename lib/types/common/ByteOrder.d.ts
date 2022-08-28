@@ -1,0 +1,1 @@
+type ByteOrder = 'BigEndian' | 'LittleEndian';
