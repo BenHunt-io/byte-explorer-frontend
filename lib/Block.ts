@@ -12,8 +12,10 @@ export default class Block {
         this.rawHexData = rawHexData;
         let reader = new BYOBReader(rawHexData, 'hex');
         this.header = BlockHeader.createFromReader(reader, 'BigEndian');
+
+        let txCount = reader.read(Buffer.alloc(1)).readUintBE(0, 1);
         
-        while(reader.bytesRemaining() > 0){
+        for(let i = 0; i<txCount; i++){
             this.txs.push(Transaction.createFromReader(reader, 'BigEndian'));
         }
     }

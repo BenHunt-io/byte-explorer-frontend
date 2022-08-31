@@ -38,6 +38,8 @@ type TxOut = {
  * Constructs a transaction from raw hex encoded transaction data. Continually parses
  * a stream of bytes from start to end with different parsing functions implementing the decoding
  * of each part of the transaction.
+ * 
+ *  
  */
 export default class Transaction {
 
@@ -156,11 +158,11 @@ export default class Transaction {
 
         this.witnessOne = reader.read(Buffer.alloc(witnessSize));
 
-        // Segwit 2
-        this.witnessTwoSizeBuffer = reader.read(Buffer.alloc(1));
-        let witnessTwoSize = this.witnessTwoSizeBuffer.readUintBE(0, 1);
+        // // Segwit 2
+        // this.witnessTwoSizeBuffer = reader.read(Buffer.alloc(1));
+        // let witnessTwoSize = this.witnessTwoSizeBuffer.readUintBE(0, 1);
 
-        this.witnessTwo = reader.read(Buffer.alloc(witnessTwoSize));
+        // this.witnessTwo = reader.read(Buffer.alloc(witnessTwoSize));
     }
 
     parseLockTime(reader : BYOBReader){
@@ -186,7 +188,7 @@ export default class Transaction {
     getTransactionInputs()  : TxIn[] {
         return this.inputs.map((txInBuffer) => ({
                 txId : txInBuffer.txId.reverse().toString('hex'),
-                vOut : txInBuffer.vOut.reverse().readUint32BE(),
+                vOut : txInBuffer.vOut.readUInt32LE(),
                 scriptSigSize : txInBuffer.scriptSigSize.readUInt8(),
                 scriptSig : txInBuffer.scriptSig.toString('hex'),
                 sequence : txInBuffer.sequence.toString('hex')

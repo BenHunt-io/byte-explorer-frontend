@@ -17,7 +17,7 @@ test('Decode block header with only coinbase transaction', () => {
 
     let header = BlockHeader.create(rawHeader, 'BigEndian')
 
-    let decodedHeader = header.getBlockHeader();
+    let decodedHeader = header.getFields();
     expect(decodedHeader.version).toBe(32);    
     expect(decodedHeader.previousBlockHash).toBe('06226e46111a0b59caaf126043eb5bbf28c34f3a5e332a1fc7b2b73cf188910f');
     expect(decodedHeader.merkleRoot).toBe('f19b86227d3b6c7e3786a506ffb4fc6b1942204bd375c4f7fec9d9b900f7f4d8');

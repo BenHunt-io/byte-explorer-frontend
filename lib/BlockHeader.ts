@@ -67,7 +67,7 @@ export default class BlockHeader {
         return new BlockHeader({rawHexData, byteOrder});
     }
 
-    public getBlockHeader(){
+    public getFields(){
         return {
             version : this.version!.readUint32LE(),
             previousBlockHash : reverse(this.previousBlockHash).toString('hex'),
