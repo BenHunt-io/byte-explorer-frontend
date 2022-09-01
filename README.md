@@ -32,3 +32,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+## Encoding and Decoding
+
+**Encoding & Decoding != Encryption & Decryption**
+
+Decoding is a process in which you change the way the information is represented, typically lifting information up from binary into something that is more meaningful at a higher level. The underlying information does not change, but the way you read it does. Decoding puts information into a new format that is more digestable by whatever system that is consuming it.
+
+For example, for huamns, we tend to like to view information in our native language. For me, this is English.
+The sentence can `"The brown fox jumps over the lazy dog"` can be represented (encoded) by a sequence of binary digits:
+```
+101010011010001100101100000110001011100101101111111011111011101000001100110110111111110001000001101010111010111011011110000111001110000011011111110110110010111100101000001110100110100011001011000001101100110000111110101111001100000110010011011111100111
+```
+This obviously isn't intelligible, but it is in a format *machines* can understand. It's easier to see with an array of bytes, how each byte can map uniquely back to a character. This mapping of bytes to characters is known as an **encoding**. The most commonly used character encoding used today is `ascii`.
+
+```
+[1010100 1101000 1100101 100000 1100010 1110010 1101111 1110111 1101110 100000 1100110 1101111 1111000 100000 1101010 1110101 1101101 1110000 1110011 100000 1101111 1110110 1100101 1110010 100000 1110100 1101000 1100101 100000 1101100 1100001 1111010 1111001 100000 1100100 1101111 1100111]
+```
+
+When we lift this binary data up into something that is more consumable, `"The brown fox jumps over the lazy dog"`, we decode it. We process all the bytes, and for each byte we look up what unique character is mapped to it.
