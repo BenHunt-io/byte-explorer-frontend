@@ -52,3 +52,11 @@ This obviously isn't intelligible, but it is in a format *machines* can understa
 ```
 
 When we lift this binary data up into something that is more consumable, `"The brown fox jumps over the lazy dog"`, we decode it. We process all the bytes, and for each byte we look up what unique character is mapped to it.
+
+### Encoding & Decoding Bitcoin
+
+**Variable Length Encoding**: Allows for an encoding to be dynamic instead of static. Data usually consists of parts, delimited by something. In the case of words, groups of information is delimited by a space. When information is encoded into binary, for example `"100010101010101010000101010"`, the person interpreting that information needs to know where parts of that data starts and ends. If parts of the information are variable length, there is no way of knowing.. unless you encode some statically sized information that says how long the variable length part is.
+- [VarInt](https://learnmeabitcoin.com/technical/varint) is the way bitcoin achieves variable length encoding.
+
+
+

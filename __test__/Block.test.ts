@@ -49,9 +49,9 @@ test("Decode block with transactions", () => {
         "02" + // input count
 
         "0e7bef88f5d57222b436c34eb302c54f700c830b89e67c220e7ec1b0c8183711" + // txId
-        "00000000" + // vOut
-
+        "00000000" + // vOut (which output is being used as input)
         "00fdffffff7850f49ca955e15233c611f0258dbed1fc5e061f48f2e629f76e10bd0a45f5880000000000fdffffff0240420f0000000000160014ba932a9bbea78b7508487bf7caab5ba63309704c2eea150000000000160014ab651a3620a5bb6c3be4a887c27a366dbd09e799024730440220561b56bee29e02e9925d5cd503bae702983b2a4b91325a4fb92d121c45354626022055b295afd65e8881bc7e327e0fccdc7a028fe21a7f2ad8a200a98600ebb2dcf2012103180bf69acae2b21be0f6268c9a01f457ba6ffa2e13ffebdfaf88966a0bde21750247304402200947418ffb2f188be61cb753145b940e05240882dd0f4f2165ce8abec4a2a2cd0220048afdc516a4367fdc2d09c4912385fe4c93f5ff5758b8528befccd049e297c6012103180bf69acae2b21be0f6268c9a01f457ba6ffa2e13ffebdfaf88966a0bde217500000000";
+    
 
     
 
@@ -103,12 +103,14 @@ test("Decode block with transactions", () => {
     expect(coinbaseTx.getLockTime()).toBe(0);
 
 
-    // Decode Coinbase Transaction
+    // Decode Second Transaction P2P
     expect(secondTx.getVersion()).toBe(2);
     expect(secondTx.isWitnessFlagPresent()).toBe(true);
 
+    // Two transaction outputs are being used as inputs.
     expect(secondTx.getInputCount()).toBe(2);
     txInputs = secondTx.getTransactionInputs();
+    // First txOut being used as input
     expect(txInputs[0].txId).toBe("113718c8b0c17e0e227ce6890b830c704fc502b34ec336b42272d5f588ef7b0e");
     expect(txInputs[0].vOut).toBe(0);
 })
