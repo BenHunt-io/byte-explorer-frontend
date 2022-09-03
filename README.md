@@ -60,3 +60,10 @@ When we lift this binary data up into something that is more consumable, `"The b
 
 
 
+## Transactions
+
+Transactions encode the information neccessary to send value from one entity to another. To send money to another entity, you need a location to send it to. This location is a bitcoin address. Just as a bank account has an account and routing number to locate where to send money to and where to send money from, a bitcoin address serves this same purpose.
+
+`[from: address] [to: otherAddress] [value: sats]`
+
+However, there is still an issue. How do you control the money at these addresses? How do you prevent people from spending your stored value? In the traditional bank sense, you would authenticate with your username and password before sending an ACH or other payment to another party. In bitcoin your credentials take the form of a key. 
