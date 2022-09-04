@@ -66,4 +66,5 @@ Transactions encode the information neccessary to send value from one entity to 
 
 `[from: address] [to: otherAddress] [value: sats]`
 
-However, there is still an issue. How do you control the money at these addresses? How do you prevent people from spending your stored value? In the traditional bank sense, you would authenticate with your username and password before sending an ACH or other payment to another party. In bitcoin your credentials take the form of a key. 
+However, there is still an issue. How do you control the money at these addresses? How do you prevent people from spending your stored value? In the traditional bank sense, you would authenticate with your username and password before sending an ACH or other payment to another party. In bitcoin your credentials take the form of a key.
+

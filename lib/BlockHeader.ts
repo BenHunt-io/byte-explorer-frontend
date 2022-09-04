@@ -24,47 +24,38 @@ export default class BlockHeader {
      * Hex encoded blocks returned from 'getblocks' is mostly given to us in BigEndian except
      * for the fields: {time, nonce} which are in LittleEndian format
      */
-    constructor({rawHexData, reader, byteOrder} : {rawHexData? : string, reader? : BYOBReader, byteOrder: ByteOrder}){
+    constructor({rawHexData, reader} : {rawHexData? : string, reader? : BYOBReader}){
 
         if(rawHexData){
             this.rawHexData = rawHexData;
             // @ts-ignore
             reader = new BYOBReader(rawHexData, 'hex');
-            this.parseHeaderBytes(reader, byteOrder);
+            this.parseHeaderBytes(reader);
         }else if(reader){
-            this.parseHeaderBytes(reader, byteOrder);
+            this.parseHeaderBytes(reader);
         }
     }
 
-    parseHeaderBytes(reader : BYOBReader, byteOrder : ByteOrder){
-        // Store the bytes in the same order as blocks are encoded and sent to the blockchain.
-        if(byteOrder == 'LittleEndian'){
-            this.version = reader.read(Buffer.alloc(4));
-            this.previousBlockHash = reader.read(Buffer.alloc(32));
-            this.merkleRoot = reader.read(Buffer.alloc(32));
-            this.time = reader.read(Buffer.alloc(4));
-            this.bits = reader.read(Buffer.alloc(4));
-            this.nonce = reader.read(Buffer.alloc(4));
-        }
-        else {
-            // Block hex data returned from Bitcoin's RPC has time and nonce not stored in BE like the other values.
-            this.version = reverse(reader.read(Buffer.alloc(4)));
-            this.previousBlockHash = reverse(reader.read(Buffer.alloc(32)));
-            this.merkleRoot = reverse(reader.read(Buffer.alloc(32)));
-            this.time = reader.read(Buffer.alloc(4));
-            this.bits = reverse(reader.read(Buffer.alloc(4)));
-            this.nonce = reader.read(Buffer.alloc(4));
-        }
+    // Store the bytes in the same order as blocks are encoded and sent to the blockchain.
+    parseHeaderBytes(reader : BYOBReader){
+        // Block hex data returned from Bitcoin's RPC has time and nonce not stored in BE like the other values.
+        // raw block data assumed to be in the order that is returned from getblock RPC call
+        this.version = reverse(reader.read(Buffer.alloc(4)));
+        this.previousBlockHash = reader.read(Buffer.alloc(32));
+        this.merkleRoot = reader.read(Buffer.alloc(32));
+        this.time = reader.read(Buffer.alloc(4));
+        this.bits = reverse(reader.read(Buffer.alloc(4)));
+        this.nonce = reader.read(Buffer.alloc(4));
     }
 
 
 
-    static createFromReader(reader : BYOBReader, byteOrder : ByteOrder){
-        return new BlockHeader({reader, byteOrder});
+    static createFromReader(reader : BYOBReader){
+        return new BlockHeader({reader});
     }
 
-    static create(rawHexData : string, byteOrder : ByteOrder){
-        return new BlockHeader({rawHexData, byteOrder});
+    static create(rawHexData : string){
+        return new BlockHeader({rawHexData});
     }
 
     public getFields(){

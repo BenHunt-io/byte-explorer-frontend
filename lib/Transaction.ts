@@ -61,32 +61,38 @@ export default class Transaction {
     private witnessTwo? : Buffer;
 
     // Store transactions in the byte order that is used in the blockchain.
-    constructor({rawTxData, reader, byteOrder} : {rawTxData? : string, reader? : BYOBReader, byteOrder: ByteOrder}){
+    constructor({rawTxData, reader, coinbaseTx=false} : {rawTxData? : string, reader? : BYOBReader, coinbaseTx? : boolean}){
 
         if(rawTxData){
             this.rawTx = rawTxData;
             let reader = new BYOBReader(rawTxData, 'hex');
-            this.parseTransactionBytes(reader);
+            this.parseTransactionBytes(reader, coinbaseTx);
         }else if(reader){
-            this.parseTransactionBytes(reader);
+            this.parseTransactionBytes(reader, coinbaseTx);
         }
     }
 
-    static createFromReader(reader : BYOBReader, byteOrder : ByteOrder){
-        return new Transaction({reader, byteOrder});
+    static createFromReader(reader : BYOBReader, coinbaseTx : boolean){
+        return new Transaction({reader, coinbaseTx});
     }
 
-    static create(rawTxData : string, byteOrder : ByteOrder){
-        return new Transaction({rawTxData, byteOrder});
+    static create(rawTxData : string, coinbaseTx: boolean){
+        return new Transaction({rawTxData, coinbaseTx});
     }
 
-    parseTransactionBytes(reader : BYOBReader){
+    parseTransactionBytes(reader : BYOBReader, coinbaseTx: boolean){
 
         this.version = reader.read(Buffer.alloc(4));
-        this.flag = reader.read(Buffer.alloc(2));
+        // Don't know how to make my regtest node not use segwit for coinbase txs
+        if(coinbaseTx){
+            this.flag = reader.read(Buffer.alloc(2));
+        }
         this.parseInputs(reader);
         this.parseOutputs(reader);
-        this.parseWitnesses(reader);
+        // Don't know how to make my regtest node not use segwit for coinbase txs
+        if(coinbaseTx){
+            this.parseWitnesses(reader);
+        }
         this.parseLockTime(reader);
     }
 
@@ -157,12 +163,6 @@ export default class Transaction {
         let witnessSize = this.witnessOneSizeBuffer.readUintBE(0, 1);
 
         this.witnessOne = reader.read(Buffer.alloc(witnessSize));
-
-        // // Segwit 2
-        // this.witnessTwoSizeBuffer = reader.read(Buffer.alloc(1));
-        // let witnessTwoSize = this.witnessTwoSizeBuffer.readUintBE(0, 1);
-
-        // this.witnessTwo = reader.read(Buffer.alloc(witnessTwoSize));
     }
 
     parseLockTime(reader : BYOBReader){

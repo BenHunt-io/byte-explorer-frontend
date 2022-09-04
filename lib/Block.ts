@@ -11,12 +11,14 @@ export default class Block {
     constructor(rawHexData : string){
         this.rawHexData = rawHexData;
         let reader = new BYOBReader(rawHexData, 'hex');
-        this.header = BlockHeader.createFromReader(reader, 'BigEndian');
+        this.header = BlockHeader.createFromReader(reader);
 
         let txCount = reader.read(Buffer.alloc(1)).readUintBE(0, 1);
         
-        for(let i = 0; i<txCount; i++){
-            this.txs.push(Transaction.createFromReader(reader, 'BigEndian'));
+        let isCoinbaseTx = true;
+        this.txs.push(Transaction.createFromReader(reader, isCoinbaseTx))
+        for(let i = 0; i<txCount-1; i++){
+            this.txs.push(Transaction.createFromReader(reader, false));
         }
     }
 
