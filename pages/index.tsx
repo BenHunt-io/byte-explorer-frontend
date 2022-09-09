@@ -18,6 +18,7 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SpeedIcon from '@mui/icons-material/Speed';
 import AddIcon from '@mui/icons-material/Add';
+import TransactionTable from '../components/pages/TransactionTable';
 
 
 
@@ -31,20 +32,11 @@ function createData(
   return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 
 const Home: NextPage = () => {
 
   const [headerOpen, setHeaderOpen] = React.useState(false);
   const [txsOpen, setTxsOpen] = React.useState(false);
-
 
 
   return (
@@ -93,30 +85,9 @@ const Home: NextPage = () => {
           </TableContainer>
         </Grid2>
 
-        <Grid2 display="flex" justifyContent="center" xs={12}>
-          <TableContainer component={Paper}>
-            <Table size="small" aria-label="simple table">
-
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Transactions</TableCell>
-                </TableRow>
-
-              </TableHead>
-
-
-              <TableBody>
-                {TableData.map((row: any) => 
-                  <TableRow key={row.id}>
-                    {/* <ThemeProvider theme={tableTheme}> */}
-                      <TableCell align="center">Transaction {row.id}</TableCell>
-                    {/* </ThemeProvider> */}
-                </TableRow>
-                )}
-              </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid2>
+        <Grid2 xs={12}>
+          <TransactionTable txIds={transactionIds}/>
+        </Grid2>
 
       </Grid2>
 
@@ -142,6 +113,18 @@ const tableTheme = createTheme({
     },
   },
 })
+
+const transactionIds = [
+  "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "hfdea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "92sea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "97dea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "gd3ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "hf3ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "79gea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "sa1ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+]
 
 const TableData = [
     {
@@ -203,12 +186,12 @@ const InnerTable = (props : any) => {
             <TableBody>
               {
                 props.rows.map((row : any) => 
-                <ThemeProvider theme={tableTheme}>
-                  <TableRow key={row.id}>
-                      <TableCell>{row.val}</TableCell>
-                      <TableCell>{row.description}</TableCell>
-                  </TableRow>
-                </ThemeProvider>
+                  <ThemeProvider theme={tableTheme}>
+                    <TableRow key={row.id}>
+                        <TableCell>{row.val}</TableCell>
+                        <TableCell>{row.description}</TableCell>
+                    </TableRow>
+                  </ThemeProvider>
 
                 )
               }
