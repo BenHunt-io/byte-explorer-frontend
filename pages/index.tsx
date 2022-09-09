@@ -6,12 +6,18 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Button from '@mui/material/Button';
-import { Collapse, createTheme, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
+import { Collapse, createTheme, Icon, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import BlankHeader from '../components/BlankHeader';
 import React from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ThemeProvider } from '@emotion/react';
+import EditIcon from '@mui/icons-material/Edit';
+import FingerprintIcon from '@mui/icons-material/Fingerprint';
+import LockClockIcon from '@mui/icons-material/LockClock';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SpeedIcon from '@mui/icons-material/Speed';
+import AddIcon from '@mui/icons-material/Add';
 
 
 
@@ -55,32 +61,63 @@ const Home: NextPage = () => {
           label="Block Data"
           fullWidth
           multiline
-          minRows={10}
+          minRows={30}
         />
       </Grid2>
 
 
+      <Grid2 container justifyContent="center" sm={12} md={4}>
+        <Grid2 display="flex" justifyContent="center">
+          <TableContainer component={Paper}>
+            <Table size="small" aria-label="simple table">
 
-      <Grid2 display="flex" justifyContent="center" sm={12} md={4}>
-        <TableContainer component={Paper}>
-          <Table  aria-label="simple table">
-
-
-            <TableBody>
-              <React.Fragment key="Header">
-                <CollapsableTableHeader title="Header" open={headerOpen} setOpen={setHeaderOpen}/>
-                <InnerTable rows={TableData} open={headerOpen} />
-              </React.Fragment>
-              <React.Fragment key="Transactions">
-                <CollapsableTableHeader title="Transactions" open={txsOpen} setOpen={setTxsOpen}/>
-                <InnerTable rows={TableData} open={txsOpen} />
-              </React.Fragment>
-            </TableBody>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center" colSpan={3}>Header</TableCell>
+                </TableRow>
+              </TableHead>
 
 
+              <TableBody>
+                {TableData.map((row: any) => 
+                  <TableRow key={row.id}>
+                    <ThemeProvider theme={tableTheme}>
+                      <TableCell align="center">{row.icon}</TableCell>
+                      <TableCell>{row.description}</TableCell>
+                      <TableCell>{row.val}</TableCell>
+                    </ThemeProvider>
+                </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid2>
 
-          </Table>
-        </TableContainer>
+        <Grid2 display="flex" justifyContent="center" xs={12}>
+          <TableContainer component={Paper}>
+            <Table size="small" aria-label="simple table">
+
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">Transactions</TableCell>
+                </TableRow>
+
+              </TableHead>
+
+
+              <TableBody>
+                {TableData.map((row: any) => 
+                  <TableRow key={row.id}>
+                    {/* <ThemeProvider theme={tableTheme}> */}
+                      <TableCell align="center">Transaction {row.id}</TableCell>
+                    {/* </ThemeProvider> */}
+                </TableRow>
+                )}
+              </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid2>
+
       </Grid2>
 
 
@@ -98,8 +135,8 @@ const tableTheme = createTheme({
         // Name of the slot
         root: {
           // Some CSS
-          columnWidth : "160px",
-          wordWrap: "break-word"
+          wordWrap: "break-word",
+          columnWidth: "160px"
         },
       },
     },
@@ -110,12 +147,38 @@ const TableData = [
     {
       id : 1,
       val: 2,
-      description: "Version"
+      description: "Version",
+      icon : <EditIcon/>
     },
     {
       id: 2,
       val: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-      description: "Tx Id"
+      description: "Previous Block Header Hash",
+      icon : <FingerprintIcon/>
+    },
+    {
+      id: 3,
+      val: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      description: "Merkle Root Hash",
+      icon: <FingerprintIcon/>
+    },
+    {
+      id: 4,
+      val: "Sep 05 2022 11:52:12",
+      description: "Time",
+      icon: <AccessTimeIcon/>
+    },
+    {
+      id: 5,
+      val: "25",
+      description: "Nbits",
+      icon: <SpeedIcon/>
+    },
+    {
+      id: 5,
+      val: "3",
+      description: "Nonce",
+      icon: <AddIcon/>
     }
 ];
 
@@ -130,7 +193,7 @@ const InnerTable = (props : any) => {
       <TableRow>
         <TableCell>
           <Collapse in={props.open} timeout="auto" unmountOnExit>
-            <Table size="small">
+            <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Value</TableCell>
@@ -140,22 +203,15 @@ const InnerTable = (props : any) => {
             <TableBody>
               {
                 props.rows.map((row : any) => 
+                <ThemeProvider theme={tableTheme}>
                   <TableRow key={row.id}>
-                    <ThemeProvider theme={tableTheme}>
                       <TableCell>{row.val}</TableCell>
                       <TableCell>{row.description}</TableCell>
-                      </ThemeProvider>
                   </TableRow>
+                </ThemeProvider>
+
                 )
               }
-              <React.Fragment key="TxInputs">
-                <CollapsableTableHeader title="Transaction Inputs" open={open} setOpen={setOpen}/>
-                <InnerTable rows={TableData} open={open}/>
-              </React.Fragment>
-              <React.Fragment key="TxOutputs">
-                <CollapsableTableHeader title="Transaction Outputs" open={open} setOpen={setOpen}/>
-                <InnerTable rows={TableData} open={open}/>
-              </React.Fragment>
             </TableBody>
             </Table>
           </Collapse>
