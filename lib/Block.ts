@@ -1,6 +1,6 @@
 import BlockHeader from "./BlockHeader";
 import BYOBReader from "./BYOBReader";
-import Transaction from "./Transaction";
+import Transaction from "./transaction/Transaction";
 
 export default class Block {
 

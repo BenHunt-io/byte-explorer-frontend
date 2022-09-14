@@ -1,8 +1,6 @@
 import { Buffer } from 'buffer';
 import reverse from 'buffer-reverse';
-import BYOBReader from './BYOBReader'
-import Transaction from './Transaction';
-
+import BYOBReader from './BYOBReader';
 
 /**
  * These header fields are not optional, but typescript does not recoginze them being set in the constructor

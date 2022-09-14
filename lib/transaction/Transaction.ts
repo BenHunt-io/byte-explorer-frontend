@@ -1,7 +1,7 @@
 import { Encoding } from "node:crypto";
 import { Buffer } from 'buffer';
 import reverse from 'buffer-reverse';
-import BYOBReader from './BYOBReader'
+import BYOBReader from '../BYOBReader'
 
 
 

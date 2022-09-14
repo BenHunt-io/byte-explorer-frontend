@@ -6,8 +6,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Button from '@mui/material/Button';
-import { Collapse, createTheme, Icon, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import React from 'react';
+import { Collapse, createTheme, Icon, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
+import React, { useEffect } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ThemeProvider } from '@emotion/react';
@@ -22,15 +22,16 @@ import TransactionInTable from '../components/pages/home/TransactionInTable';
 import TransactionOutputsTable from '../components/pages/home/TransactionOutputsTable';
 import TransactionOutTable from '../components/pages/home/TransactionOutTable';
 import TransactionInputsTable from '../components/pages/home/TransactionInputsTable';
-import TransactionHeaderTable from '../components/pages/home/TransactionHeaderTable';
+import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pages/home/TransactionHeaderTable';
+import Block from '../lib/Block';
 
 // Transaction Header Table Data
 const txHeaderData = {
-  version: "2",
+  version: 2,
   previousBlockHeaderHash: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
   merkleRootHash: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
   time: new Date(),
-  nBits: 25,
+  nBits: "25",
   nonce: 3
 }
 
@@ -111,7 +112,11 @@ function createData(
 
 const Home: NextPage = () => {
 
-  const [headerOpen, setHeaderOpen] = React.useState(false);
+  const [rawBlockData, setRawBlockData] = React.useState<string>("");
+
+  // Decoded Block State
+  const [header, setHeader] = React.useState<TransactionHeaderModel>(txHeaderData);
+
   const [txSelected, setTxSelected] = React.useState<undefined | string>();
   const [txInputSelected, setTxInputSelected] = React.useState<undefined | string>();
   const [txOutputSelected, setTxOutputSelected] = React.useState<undefined | string>();
@@ -120,6 +125,7 @@ const Home: NextPage = () => {
   const isTxInputSelected = () => txInputSelected;
   const isTxOutputSelected = () => txOutputSelected;
 
+
   const getTransactionInput = (txId : string | undefined) => {
     const result = Object.entries(txInputs).find(([txIdentifier]) => txIdentifier === txId);
     if(result){
@@ -127,6 +133,23 @@ const Home: NextPage = () => {
     }
 
     return [];
+  }
+
+  const handleBlockDataInputChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setRawBlockData(e.currentTarget.value);
+
+    console.log(rawBlockData);
+    // decode header
+    let block = new Block(rawBlockData);
+    let header = block.getHeader().getFields();
+    setHeader({
+      version: header.version,
+      previousBlockHeaderHash: header.previousBlockHash,
+      merkleRootHash: header.merkleRoot,
+      time: new Date(header.time*1000),
+      nBits: header.bits,
+      nonce: header.nonce,
+    })
   }
 
   return (
@@ -140,10 +163,13 @@ const Home: NextPage = () => {
 
       <Grid2 maxWidth="600px" xs={4}>
         <TextField
+          value={rawBlockData}
+          onChange={(e) => handleBlockDataInputChange(e)}
           label="Block Data"
           fullWidth
           multiline
-          minRows={24}
+          minRows={25}
+          maxRows={25}
         />
       </Grid2>
 
@@ -151,7 +177,7 @@ const Home: NextPage = () => {
       <Grid2 container xs={4} maxWidth="624px">
         <Grid2 xs={12}>
           <TransactionHeaderTable
-            txHeader={txHeaderData}
+            txHeader={header}
           />
         </Grid2>
 

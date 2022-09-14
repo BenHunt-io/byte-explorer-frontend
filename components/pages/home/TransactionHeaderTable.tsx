@@ -25,11 +25,11 @@ const tableTheme = createTheme({
   })
 
 type TransactionHeaderModel = {
-    version: string,
+    version: number,
     previousBlockHeaderHash: string,
     merkleRootHash: string,
     time: Date,
-    nBits: number, // difficulty settings
+    nBits: string, // difficulty settings
     nonce: number
 }
 
@@ -93,4 +93,5 @@ const TransactionHeaderTable = (props: TransactionHeaderTableProps) => (
 )
 
 
-export default TransactionHeaderTable;
+export type  {TransactionHeaderModel};
+export {TransactionHeaderTable};
