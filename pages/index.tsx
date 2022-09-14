@@ -7,7 +7,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Button from '@mui/material/Button';
 import { Collapse, createTheme, Icon, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import BlankHeader from '../components/BlankHeader';
 import React from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -18,8 +17,85 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SpeedIcon from '@mui/icons-material/Speed';
 import AddIcon from '@mui/icons-material/Add';
-import TransactionTable from '../components/pages/TransactionTable';
+import TransactionTable from '../components/pages/home/TransactionTable';
+import TransactionInTable from '../components/pages/home/TransactionInTable';
+import TransactionOutputsTable from '../components/pages/home/TransactionOutputsTable';
+import TransactionOutTable from '../components/pages/home/TransactionOutTable';
+import TransactionInputsTable from '../components/pages/home/TransactionInputsTable';
+import TransactionHeaderTable from '../components/pages/home/TransactionHeaderTable';
 
+// Transaction Header Table Data
+const txHeaderData = {
+  version: "2",
+  previousBlockHeaderHash: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  merkleRootHash: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  time: new Date(),
+  nBits: 25,
+  nonce: 3
+}
+
+// Transaction Id Table Data
+const txIds = [
+  "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "hfdea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "92sea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "97dea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "gd3ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "hf3ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "79gea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+  "sa1ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+]
+
+//
+const txInputs = {
+
+  "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6" : [
+    {
+      from: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 100,
+    },
+    {
+      from: "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 15_500,
+    },
+    {
+      from: "hfdea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 6_500_000,
+    }
+  ],
+
+  "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6" : [
+    {
+      from: "79gea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 10_000,
+    },
+    {
+      from: "92sea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 700,
+    },
+    {
+      from: "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 10_500_000,
+    }
+  ],
+
+  "hfdea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6" : [
+    {
+      from: "hfdea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 420,
+    },
+    {
+      from: "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 1_337_000,
+    },
+    {
+      from: "sa1ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+      value: 69_000_000,
+    }
+  ],
+
+}
 
 
 function createData(
@@ -36,61 +112,99 @@ function createData(
 const Home: NextPage = () => {
 
   const [headerOpen, setHeaderOpen] = React.useState(false);
-  const [txsOpen, setTxsOpen] = React.useState(false);
+  const [txSelected, setTxSelected] = React.useState<undefined | string>();
+  const [txInputSelected, setTxInputSelected] = React.useState<undefined | string>();
+  const [txOutputSelected, setTxOutputSelected] = React.useState<undefined | string>();
 
+  const isTxSelected = () => txSelected;
+  const isTxInputSelected = () => txInputSelected;
+  const isTxOutputSelected = () => txOutputSelected;
+
+  const getTransactionInput = (txId : string | undefined) => {
+    const result = Object.entries(txInputs).find(([txIdentifier]) => txIdentifier === txId);
+    if(result){
+      return result[1];
+    }
+
+    return [];
+  }
 
   return (
-    <Grid2 container justifyContent="center" spacing={2}>
-–
+    <Grid2 container justifyContent="center" sx={{marginTop: 15}} spacing={3}>
 
-      {/* Blank Header to push down the other components from the top */}
-      <Grid2 xs={12}>
-        <BlankHeader />
+      <Grid2 xs={4} textAlign="center">
+        <h1>Bitcoin Byte Explorer</h1>
       </Grid2>
+      <Grid2 xs={12} padding="0px 0px 0px 0px"/>
 
-      <Grid2 display="flex" justifyContent="center" sm={12} md={4}>
+
+      <Grid2 maxWidth="600px" xs={4}>
         <TextField
           label="Block Data"
           fullWidth
           multiline
-          minRows={30}
+          minRows={24}
         />
       </Grid2>
 
 
-      <Grid2 container justifyContent="center" sm={12} md={4}>
-        <Grid2 display="flex" justifyContent="center">
-          <TableContainer component={Paper}>
-            <Table size="small" aria-label="simple table">
-
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" colSpan={3}>Header</TableCell>
-                </TableRow>
-              </TableHead>
-
-
-              <TableBody>
-                {TableData.map((row: any) => 
-                  <TableRow key={row.id}>
-                    <ThemeProvider theme={tableTheme}>
-                      <TableCell align="center">{row.icon}</TableCell>
-                      <TableCell>{row.description}</TableCell>
-                      <TableCell>{row.val}</TableCell>
-                    </ThemeProvider>
-                </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+      <Grid2 container xs={4} maxWidth="624px">
+        <Grid2 xs={12}>
+          <TransactionHeaderTable
+            txHeader={txHeaderData}
+          />
         </Grid2>
 
         <Grid2 xs={12}>
-          <TransactionTable txIds={transactionIds}/>
+          <TransactionTable 
+            setTxSelected={setTxSelected}
+            txIds={txIds}
+          />
         </Grid2>
-
       </Grid2>
 
+      <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+
+
+      { isTxSelected() ? (
+        <>
+          <Grid2 xs={4} maxWidth="600px">
+              <TransactionInTable 
+                setTxInputSelected={setTxInputSelected}
+                txInputs={getTransactionInput(txSelected)}
+              />
+          </Grid2>
+          <Grid2 xs={4} maxWidth="600px">
+              <TransactionOutTable />
+          </Grid2>
+        </> ) : undefined
+      }
+
+
+      <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+
+
+      { isTxInputSelected() ?
+      <Grid2 xs={4} maxWidth="600px">
+          <TransactionInputsTable
+            txInputs={[{
+              txId : "1251ASKLDLJ24123kSJGSD",
+              vOut : 3,
+              scriptSigSize: 30,
+              scriptSig: "EJKSDJLKSJDFKLDJGKL12312312l",
+              sequence: "ffffffff"
+            }]}
+           />
+      </Grid2> : undefined
+      }
+
+      { isTxOutputSelected() ? 
+      <Grid2 md={4} maxWidth="600px">
+          <TransactionOutputsTable />
+      </Grid2> : undefined
+      }
+      
+      <Grid2 xs={12} padding="0px 0px 0px 0px"/>
 
 
 
@@ -98,127 +212,45 @@ const Home: NextPage = () => {
   )
 }
 
-const tableTheme = createTheme({
-  components: {
-    // Name of the component
-    MuiTableCell: {
-      styleOverrides: {
-        // Name of the slot
-        root: {
-          // Some CSS
-          wordWrap: "break-word",
-          columnWidth: "160px"
-        },
-      },
-    },
-  },
-})
-
-const transactionIds = [
-  "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "521ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "hfdea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "92sea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "97dea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "gd3ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "hf3ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "79gea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-  "sa1ea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-]
 
 const TableData = [
-    {
-      id : 1,
-      val: 2,
-      description: "Version",
-      icon : <EditIcon/>
-    },
-    {
-      id: 2,
-      val: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-      description: "Previous Block Header Hash",
-      icon : <FingerprintIcon/>
-    },
-    {
-      id: 3,
-      val: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
-      description: "Merkle Root Hash",
-      icon: <FingerprintIcon/>
-    },
-    {
-      id: 4,
-      val: "Sep 05 2022 11:52:12",
-      description: "Time",
-      icon: <AccessTimeIcon/>
-    },
-    {
-      id: 5,
-      val: "25",
-      description: "Nbits",
-      icon: <SpeedIcon/>
-    },
-    {
-      id: 5,
-      val: "3",
-      description: "Nonce",
-      icon: <AddIcon/>
-    }
+  {
+    id: 1,
+    val: 2,
+    description: "Version",
+    icon: <EditIcon />
+  },
+  {
+    id: 2,
+    val: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+    description: "Previous Block Header Hash",
+    icon: <FingerprintIcon />
+  },
+  {
+    id: 3,
+    val: "67cea7e5c4543bfe8518e27211d3d69bab59ae174bab547e7bbf5dfa1e3d19d6",
+    description: "Merkle Root Hash",
+    icon: <FingerprintIcon />
+  },
+  {
+    id: 4,
+    val: "Sep 05 2022 11:52:12",
+    description: "Time",
+    icon: <AccessTimeIcon />
+  },
+  {
+    id: 5,
+    val: "25",
+    description: "Nbits",
+    icon: <SpeedIcon />
+  },
+  {
+    id: 5,
+    val: "3",
+    description: "Nonce",
+    icon: <AddIcon />
+  }
 ];
 
-{/* Collapsable Inner Table */}
-const InnerTable = (props : any) => {
-
-  const [open, setOpen] = React.useState(false);
-
-  
-  return (
-      
-      <TableRow>
-        <TableCell>
-          <Collapse in={props.open} timeout="auto" unmountOnExit>
-            <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Value</TableCell>
-                <TableCell>Description</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-                props.rows.map((row : any) => 
-                  <ThemeProvider theme={tableTheme}>
-                    <TableRow key={row.id}>
-                        <TableCell>{row.val}</TableCell>
-                        <TableCell>{row.description}</TableCell>
-                    </TableRow>
-                  </ThemeProvider>
-
-                )
-              }
-            </TableBody>
-            </Table>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-  )
-}
-
-{/* Table Header (Header, Transactions) */}
-const CollapsableTableHeader = (props : any) => {  
-
-  return(
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell size="small">
-          <IconButton
-            size="small"
-            onClick={() => props.setOpen(!props.open)}
-          >
-            {props.open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-          {props.title}
-        </TableCell>
-      </TableRow>
-  )
-}
 
 export default Home

@@ -8,7 +8,7 @@ const TransactionOutputsTable = (props: any) => {
                 <Table size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell colSpan={2} align="center">Out</TableCell>
+                            <TableCell colSpan={2} align="center">Output Detail</TableCell>
                         </TableRow>
                         <TableRow >
                             <TableCell>Value</TableCell>

@@ -3,11 +3,18 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import Box from "@mui/system/Box/Box";
 import React, { useState } from "react";
 import TransactionInputsTable from "./TransactionInputsTable";
+import TransactionInTable from "./TransactionInTable";
 import TransactionOutputsTable from "./TransactionOutputsTable";
+import TransactionOutTable from "./TransactionOutTable";
 
 
+type TransactionTableProps = {
+    txIds: string[]
+    // recieve state hook to set the selected transaction visibile to the parent componet
+    setTxSelected : React.Dispatch<React.SetStateAction<string | undefined>>
+}
 
-const TransactionTable = (props: any) => {
+const TransactionTable = (props: TransactionTableProps) => {
 
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
@@ -45,8 +52,9 @@ const TransactionTable = (props: any) => {
         setPage(newPage);
     }
 
-    const handleClickTransaction = (e: React.SyntheticEvent, rowName: string) => {
-        setSelected(rowName);
+    const handleClickTransaction = (e: React.SyntheticEvent, txId: string) => {
+        setSelected(txId);
+        props.setTxSelected(txId);
     }
 
     const isSelected = (txId: string) => txId === selected;
@@ -54,59 +62,47 @@ const TransactionTable = (props: any) => {
     function TransactionInputs (props : any) {
         if(selected){
             return <TransactionInputsTable
-                txInput={{
+                txInputs={[{
                     txId : "asd...123",
                     vOut : 12,
                     scriptSigSize: 23,
                     scriptSig: "10238d09f8sdfsdjfsdjlf1233123",
                     sequence: "ffffffff"
-                }}    
+                }]}    
             />
         }
         return null;
     }
 
     return (
-            <Grid2 container>
-                <Grid2 xs={12} paddingLeft={0} paddingRight={0}>
-                        <Paper sx={{ width: '100%'}}>
-                            <TableContainer component={Paper}>
-                                <Table size="small" aria-label="simple table">
+        <Paper sx={{ width: '100%'}}>
+            <TableContainer component={Paper}>
+                <Table size="small">
 
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell align="center">Transactions</TableCell>
-                                        </TableRow>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center">Transactions</TableCell>
+                        </TableRow>
 
-                                    </TableHead>
+                    </TableHead>
 
 
-                                    <TableBody>
-                                        {createTableRows(props.txIds)}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25]}
-                                component="div"
-                                count={props.txIds.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
-                        </Paper>
-                </Grid2>
-                <Grid2 xs={12}  paddingLeft={0} paddingRight={0}>
-                        <TransactionInputs/>
-                </Grid2>
-                <Grid2 xs={12}  paddingLeft={0} paddingRight={0}>
-                        <TransactionOutputsTable/>
-                </Grid2>
-            </Grid2>
-
+                    <TableBody>
+                        {createTableRows(props.txIds)}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={props.txIds.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </Paper>
     );
-
 }
 
 
