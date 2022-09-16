@@ -2,7 +2,7 @@ import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper
 import { useState } from "react";
 
 
-type TransactionInput = {
+export type TransactionInput = {
     txId : string,
     vOut : number,
     scriptSigSize: number,

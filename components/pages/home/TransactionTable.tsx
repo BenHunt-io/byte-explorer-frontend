@@ -1,7 +1,7 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import Box from "@mui/system/Box/Box";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TransactionInputsTable from "./TransactionInDetailTable";
 import TransactionInTable from "./TransactionInTable";
 import TransactionOutputsTable from "./TransactionOutDetailTable";
@@ -19,13 +19,17 @@ const TransactionTable = (props: TransactionTableProps) => {
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState<string>();
 
+    useEffect(() => {
+        console.log(`Tx Table Render: ${props.txIds}`);
+    })
+
     const shortenTxId = (txId: string) => {
         return txId.slice(0, 3) + "..." + txId.slice(txId.length-3, txId.length);
     };
 
     const createTableRows = (txIds : string[]) => {
         let count = 0;
-        return props.txIds
+        return txIds
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((txId: any) => {
                 let txNum = page*rowsPerPage+(++count);

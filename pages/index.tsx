@@ -14,8 +14,10 @@ import TransactionOutTable from '../components/pages/home/TransactionOutTable';
 import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pages/home/TransactionHeaderTable';
 import Block from '../lib/Block';
 import TransactionOutDetailTable from '../components/pages/home/TransactionOutDetailTable';
-import TransactionInDetailTable from '../components/pages/home/TransactionInDetailTable';
+import TransactionInDetailTable, { TransactionInput } from '../components/pages/home/TransactionInDetailTable';
 import { txInputs, txOutputs, txIds, txInDetailData, txOutDetailData, txHeaderData } from '../public/data/page/home/mock/homeData';
+import { Key } from '@mui/icons-material';
+import Transaction from '../lib/transaction/Transaction';
 
 
 const darkTheme = createTheme({
@@ -44,10 +46,11 @@ const Home: NextPage = () => {
   const [rawBlockData, setRawBlockData] = React.useState<string>("");
   const [block, setBlock] = React.useState<Block | undefined>();
 
-  // Decoded Block State
-  const [header, setHeader] = React.useState<TransactionHeaderModel>(txHeaderData);
+  // Decoded Block Data that is displayed in the decoded table data.
+  const [header, setHeader] = React.useState<TransactionHeaderModel>();
   const [txIds, setTxIds] = React.useState<string[]>([]);
   const [txInputSummaries, setTxInputSummaries] = React.useState<TransactionInputSummary[]>([]);
+  const [selectedTxInput, setSelectedTxInput] = React.useState<TransactionInput>();
 
   const [txSelected, setTxSelected] = React.useState<undefined | string>();
   const [txInputSelected, setTxInputSelected] = React.useState<undefined | string>();
@@ -56,7 +59,6 @@ const Home: NextPage = () => {
   const isTxSelected = () => txSelected;
   const isTxInputSelected = () => txInputSelected;
   const isTxOutputSelected = () => txOutputSelected;
-
 
   const getTransactionInput = (txId : string | undefined) => {
     const result = Object.entries(txInputs).find(([txIdentifier]) => txIdentifier === txId);
@@ -74,6 +76,9 @@ const Home: NextPage = () => {
     return [];
   }
 
+  /**
+   * 
+   */
   const onTxSelected = (txId: string) => {
 
     setTxSelected(txId);
@@ -87,7 +92,7 @@ const Home: NextPage = () => {
 
     // @ts-ignore
     Promise.all<any>(txIdPromises).then((txIdPairs) => 
-      txIdPairs.find((txIdPair: any) => txIdPair.txId === txSelected).tx
+      txIdPairs.find((txIdPair: any) => txIdPair.txId === txId).tx
     ).then((selectedTx) => {
       let txInputSummaries = selectedTx.getTransactionInputs().map((txInput: any) => 
         ({
@@ -98,17 +103,26 @@ const Home: NextPage = () => {
 
       setTxInputSummaries(txInputSummaries);
     })
-
   }
 
+
+  /**
+   * Changes to the block data input field
+   */
   const handleBlockDataInputChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setRawBlockData(e.currentTarget.value);
+
+    let newRawBlockInput = e.currentTarget.value;
+        
+    setRawBlockData(newRawBlockInput);
 
     // decode block
-    let block = new Block(rawBlockData);
+    let block = new Block(newRawBlockInput);
     setBlock(block);
 
     let header = block.getHeader().getFields();
+
+    console.log(header);
+
     setHeader({
       version: header.version,
       previousBlockHeaderHash: header.previousBlockHash,
@@ -119,11 +133,10 @@ const Home: NextPage = () => {
     })
 
     let txs = block.getTransactions();
-    console.log(txs.length)
+
     Promise.all(txs.map((tx) => tx.getTxId()))
       .then(txIds => {
         setTxIds(txIds);
-        console.log(txIds);
     })
   }
 
@@ -154,9 +167,9 @@ const Home: NextPage = () => {
 
         <Grid2 container xs={4} maxWidth="624px">
           <Grid2 xs={12}>
-            <TransactionHeaderTable
-              txHeader={header}
-            />
+              <TransactionHeaderTable
+                txHeader={header}
+              />
           </Grid2>
 
           <Grid2 xs={12}>

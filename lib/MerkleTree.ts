@@ -25,7 +25,6 @@ export default class MerkleTree {
 
     static async hashTwice(input : string) {
 
-        console.log(window.crypto);
         let hashBuffer = await window.crypto.subtle.digest('SHA-256', Buffer.from(input, 'hex'));
         let firstHash = Buffer.from(hashBuffer).toString('hex');
 
