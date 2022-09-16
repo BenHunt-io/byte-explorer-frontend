@@ -1,8 +1,12 @@
-import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper, TablePagination } from "@mui/material";
+import { Table, TableCell, TableHead, TableContainer, TableBody, Paper, TablePagination, TableRow } from "@mui/material";
 import { useState } from "react";
+import Money from "../../../lib/transaction/Money";
+import ColoredMoney from "../../common/ColoredMoney";
+import { styled } from '@mui/material/styles';
 
 
-type TransactionInputSummary = {
+
+export type TransactionInputSummary = {
     from : string,
     value : number
 }
@@ -12,6 +16,8 @@ type TransactionInTableProps = {
     // recieve state hook to set the selected transaction input visibile to the parent componet
     setTxInputSelected : React.Dispatch<React.SetStateAction<string | undefined>>
 }
+
+
 
 const TransactionInTable = (props: TransactionInTableProps) => {
 
@@ -52,8 +58,8 @@ const TransactionInTable = (props: TransactionInTableProps) => {
                         onClick={(e) => handleClickTransaction(e, txInput.from)}
                         key={txInput.from}
                         selected={isSelected(txInput)}>
-                        <TableCell align="center">Transaction {txNum}: {shortenTxId(txInput.from)} </TableCell>
-                        <TableCell align="center">{txInput.value} sats</TableCell>
+                        <TableCell align="center" style={{color:"white"}}>Transaction {txNum}: {shortenTxId(txInput.from)} </TableCell>
+                        <TableCell align="center"><ColoredMoney value={txInput.value}/></TableCell>
                     </TableRow>
                 );
             });

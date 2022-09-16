@@ -1,6 +1,63 @@
-import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper, TablePagination } from "@mui/material";
+import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper, TablePagination, styled } from "@mui/material";
+import { useState } from "react";
+import ColoredMoney from "../../common/ColoredMoney";
 
-const TransactionOutTable = (props: any) => {
+type TransactionOutSummary = {
+    to : string,
+    value : number
+}
+
+type TransactionOutTableProps = {
+    txInputs : TransactionOutSummary[]
+    // recieve state hook to set the selected transaction input visibile to the parent componet
+    setTxOutputSelected : React.Dispatch<React.SetStateAction<string | undefined>>
+}
+
+const TransactionOutTable = (props: TransactionOutTableProps) => {
+
+    const [rowsPerPage, setRowsPerPage] = useState(3);
+    const [page, setPage] = useState(0);
+    const [selected, setSelected] = useState<string>();
+
+    const shortenTxId = (txId: string) => {
+        return txId.slice(0, 3) + "..." + txId.slice(txId.length-3, txId.length);
+    };
+
+    const handleChangeRowsPerPage = (e : React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(e.target.value));
+        setPage(0);
+        
+    }
+
+    const handleChangePage = (e: any, newPage: number) => {
+        setPage(newPage);
+    }
+
+    const handleClickTransaction = (e: React.SyntheticEvent, txId: string) => {
+        setSelected(txId);
+        props.setTxOutputSelected(txId);
+    }
+
+    const isSelected = (txInput : TransactionOutSummary) => txInput.to === selected;
+
+    const createTableRows = (txInputs : TransactionOutSummary[]) => {
+        let count = 0;
+        return txInputs
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((txInput: TransactionOutSummary) => {
+                let txNum = page*rowsPerPage+(++count);
+                return (
+                    <TableRow 
+                        hover
+                        onClick={(e) => handleClickTransaction(e, txInput.to)}
+                        key={txInput.to}
+                        selected={isSelected(txInput)}>
+                        <TableCell align="center">Transaction {txNum}: {shortenTxId(txInput.to)} </TableCell>
+                        <TableCell align="center"><ColoredMoney value={txInput.value}/></TableCell>
+                    </TableRow>
+                );
+            });
+    }
 
     return (
         <Paper sx={{ width: '100%'}}>
@@ -16,18 +73,7 @@ const TransactionOutTable = (props: any) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell>a25...123</TableCell>
-                            <TableCell>100 sats</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>hj2...asg</TableCell>
-                            <TableCell>15.5k sats</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>gjd...16h</TableCell>
-                            <TableCell>6.5m sats</TableCell>
-                        </TableRow>
+                        {createTableRows(props.txInputs)}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -36,6 +82,8 @@ const TransactionOutTable = (props: any) => {
                 count={3}
                 rowsPerPage={3}
                 page={0}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
             />
         </Paper>
     )

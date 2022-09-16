@@ -1,6 +1,19 @@
 import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper } from "@mui/material";
+import ColoredMoney from "../../common/ColoredMoney";
 
-const TransactionOutputsTable = (props: any) => {
+type TransactionOutputDetail = {
+    value: number
+    scriptPubKey: string
+    scriptPubKeySize: number
+}
+
+type TransactionOutputDetailTableProps = {
+    txOutDetail : TransactionOutputDetail
+}
+
+const TransactionOutDetailTable = (props: TransactionOutputDetailTableProps) => {
+
+    const {txOutDetail} = props;
 
     return (
         <Paper sx={{ width: '100%'}}>
@@ -17,15 +30,15 @@ const TransactionOutputsTable = (props: any) => {
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            <TableCell>10000 sats</TableCell>
+                            <TableCell><ColoredMoney value={txOutDetail.value}/></TableCell>
                             <TableCell>value</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>12</TableCell>
+                            <TableCell>value={txOutDetail.scriptPubKeySize}</TableCell>
                             <TableCell>scriptPubKeySize</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>32</TableCell>
+                            <TableCell>value={txOutDetail.scriptPubKey}</TableCell>
                             <TableCell>scriptPubKey</TableCell>
                         </TableRow>
                     </TableBody>
@@ -37,4 +50,4 @@ const TransactionOutputsTable = (props: any) => {
 }
 
 
-export default TransactionOutputsTable;
+export default TransactionOutDetailTable;

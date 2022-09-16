@@ -2,16 +2,15 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody
 import Grid2 from "@mui/material/Unstable_Grid2";
 import Box from "@mui/system/Box/Box";
 import React, { useState } from "react";
-import TransactionInputsTable from "./TransactionInputsTable";
+import TransactionInputsTable from "./TransactionInDetailTable";
 import TransactionInTable from "./TransactionInTable";
-import TransactionOutputsTable from "./TransactionOutputsTable";
+import TransactionOutputsTable from "./TransactionOutDetailTable";
 import TransactionOutTable from "./TransactionOutTable";
 
 
 type TransactionTableProps = {
     txIds: string[]
-    // recieve state hook to set the selected transaction visibile to the parent componet
-    setTxSelected : React.Dispatch<React.SetStateAction<string | undefined>>
+    onClick : (e : any) => void;
 }
 
 const TransactionTable = (props: TransactionTableProps) => {
@@ -54,25 +53,10 @@ const TransactionTable = (props: TransactionTableProps) => {
 
     const handleClickTransaction = (e: React.SyntheticEvent, txId: string) => {
         setSelected(txId);
-        props.setTxSelected(txId);
+        props.onClick(txId);
     }
 
     const isSelected = (txId: string) => txId === selected;
-
-    function TransactionInputs (props : any) {
-        if(selected){
-            return <TransactionInputsTable
-                txInputs={[{
-                    txId : "asd...123",
-                    vOut : 12,
-                    scriptSigSize: 23,
-                    scriptSig: "10238d09f8sdfsdjfsdjlf1233123",
-                    sequence: "ffffffff"
-                }]}    
-            />
-        }
-        return null;
-    }
 
     return (
         <Paper sx={{ width: '100%'}}>

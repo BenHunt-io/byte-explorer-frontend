@@ -1,7 +1,8 @@
-import { Encoding } from "node:crypto";
+import { Encoding, subtle } from "node:crypto";
 import { Buffer } from 'buffer';
 import reverse from 'buffer-reverse';
 import BYOBReader from '../BYOBReader'
+import MerkleTree from "../MerkleTree";
 
 
 
@@ -46,19 +47,19 @@ export default class Transaction {
     private rawTx?;
 
     // Parsed fields as bytes
-    private version? : Buffer;
-    private flag? : Buffer;
-    private inputCount? : Buffer;
+    private version : Buffer = Buffer.alloc(0);
+    private flag : Buffer = Buffer.alloc(0);
+    private inputCount : Buffer = Buffer.alloc(0);
     private inputs : TxInBuffer[] = [];
-    private outputCount? : Buffer;
+    private outputCount : Buffer = Buffer.alloc(0);
     private outputs : TxOutBuffer[] = [];
-    private lockTime? : Buffer;
+    private lockTime : Buffer = Buffer.alloc(0);
 
     // SegWit fields
-    private witnessOneSizeBuffer? : Buffer;
-    private witnessOne? : Buffer;
-    private witnessTwoSizeBuffer? : Buffer; 
-    private witnessTwo? : Buffer;
+    private witnessOneSizeBuffer : Buffer = Buffer.alloc(0);
+    private witnessOne : Buffer = Buffer.alloc(0);
+    private witnessTwoSizeBuffer : Buffer = Buffer.alloc(0); 
+    private witnessTwo : Buffer = Buffer.alloc(0);
 
     // Store transactions in the byte order that is used in the blockchain.
     constructor({rawTxData, reader, coinbaseTx=false} : {rawTxData? : string, reader? : BYOBReader, coinbaseTx? : boolean}){
@@ -69,6 +70,8 @@ export default class Transaction {
             this.parseTransactionBytes(reader, coinbaseTx);
         }else if(reader){
             this.parseTransactionBytes(reader, coinbaseTx);
+            // creates the raw tx string from all the byte data (buffers)
+            this.initializeRawTx();
         }
     }
 
@@ -78,6 +81,24 @@ export default class Transaction {
 
     static create(rawTxData : string, coinbaseTx: boolean){
         return new Transaction({rawTxData, coinbaseTx});
+    }
+
+    initializeRawTx(){
+        let txBuffer = Buffer.concat([this.version, this.flag, this.inputCount]);
+
+        this.inputs.forEach(input => {
+            txBuffer = Buffer.concat([txBuffer, input.txId, input.vOut, input.scriptSigSize, input.scriptSig, input.sequence]);
+        })
+
+        txBuffer = Buffer.concat([txBuffer, this.outputCount]);
+
+        this.outputs.forEach(output => {
+            txBuffer = Buffer.concat([txBuffer, output.value, output.scriptPubKeySize, output.scriptPubKey]);
+        })
+
+        txBuffer = Buffer.concat([txBuffer, this.lockTime]);
+
+        this.rawTx = txBuffer.toString('hex');
     }
 
     parseTransactionBytes(reader : BYOBReader, coinbaseTx: boolean){
@@ -225,4 +246,11 @@ export default class Transaction {
         ]
     }
     
+    async getTxId(){
+        if(this.rawTx){
+            return MerkleTree.hashTwice(this.rawTx)
+                .then(txId => Buffer.from(txId, 'hex').reverse().toString('hex'))
+        }
+        return "";
+    }
 } 
