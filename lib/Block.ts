@@ -2,6 +2,12 @@ import BlockHeader from "./BlockHeader";
 import BYOBReader from "./BYOBReader";
 import Transaction from "./transaction/Transaction";
 
+/**
+ * Constructs a block from a hex string or a byte reader.
+ * 
+ * TxIds are not initialized by default due to asyncronous crypto hash methods that are used
+ * to calculate the TxIds.
+ */
 export default class Block {
 
     private rawHexData : string;
@@ -35,7 +41,7 @@ export default class Block {
         return Promise.all(
             this.txs.map((tx) => 
                 new Promise<any>((resolve) => 
-                    tx.getTxId().then(txId => resolve({txId, tx}))
+                    tx.calculateTxId().then(txId => resolve({txId, tx}))
                 )
             )
         ).then(txsWithId => 

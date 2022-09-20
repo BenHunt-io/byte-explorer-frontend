@@ -61,6 +61,9 @@ export default class Transaction {
     private witnessTwoSizeBuffer : Buffer = Buffer.alloc(0); 
     private witnessTwo : Buffer = Buffer.alloc(0);
 
+    // calculated fields
+    private txId = ""; 
+
     // Store transactions in the byte order that is used in the blockchain.
     constructor({rawTxData, reader, coinbaseTx=false} : {rawTxData? : string, reader? : BYOBReader, coinbaseTx? : boolean}){
 
@@ -245,8 +248,19 @@ export default class Transaction {
             }
         ]
     }
+
+    /**
+     * @returns The id for this transaction. It is only initialized outside of this class.
+     */
+    getTxId(){
+        return this.txId;
+    }
+
+    async initializeTxId(){
+        this.txId = await this.calculateTxId();
+    }
     
-    async getTxId(){
+    async calculateTxId(){
         if(this.rawTx){
             return MerkleTree.hashTwice(this.rawTx)
                 .then(txId => Buffer.from(txId, 'hex').reverse().toString('hex'))

@@ -10,7 +10,7 @@ import React, { useEffect } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import TransactionTable from '../components/pages/home/TransactionTable';
 import TransactionInTable, { TransactionInputSummary } from '../components/pages/home/TransactionInTable';
-import TransactionOutTable from '../components/pages/home/TransactionOutTable';
+import TransactionOutTable, { TransactionOutSummary } from '../components/pages/home/TransactionOutTable';
 import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pages/home/TransactionHeaderTable';
 import Block from '../lib/Block';
 import TransactionOutDetailTable from '../components/pages/home/TransactionOutDetailTable';
@@ -50,7 +50,7 @@ const Home: NextPage = () => {
   const [header, setHeader] = React.useState<TransactionHeaderModel>();
   const [txIds, setTxIds] = React.useState<string[]>([]);
   const [txInputSummaries, setTxInputSummaries] = React.useState<TransactionInputSummary[]>([]);
-  const [selectedTxInput, setSelectedTxInput] = React.useState<TransactionInput>();
+  const [txOutputSummaries, setTxOutputSummaries] = React.useState<TransactionOutSummary[]>([]);
 
   const [txSelected, setTxSelected] = React.useState<undefined | string>();
   const [txInputSelected, setTxInputSelected] = React.useState<undefined | string>();
@@ -83,16 +83,31 @@ const Home: NextPage = () => {
 
     setTxSelected(txId);
 
-    block?.findTransactionById(txId).then((selectedTx) => {
-      let txInputSummaries = selectedTx.getTransactionInputs().map((txInput: any) => 
-        ({
-          from: txInput.txId,
-          value: txInput.value
-        })
-      );
 
-      setTxInputSummaries(txInputSummaries);
-    })
+    // Find and set transaction inputs
+    let txIns = block?.getTransactions()
+      .find(tx => tx.getTxId() === txId)?.getTransactionInputs()
+      .map(selectedTx => ({
+        from: selectedTx.txId,
+        value: 0 // need to query blockchain for actual txValue for inputs
+      }))
+
+    if(txIns){
+      setTxInputSummaries(txIns);
+    }
+
+    // Find and set transaction outputs
+    let txOuts = block?.getTransactions()
+      .find(tx => tx.getTxId() === txId)?.getTransactionOutputs()
+      .map(selectedTx => ({
+        to: selectedTx.scriptPubKey, // need to extract out the txId from script
+        value: Number(selectedTx.value) // need to query blockchain for actual txValue for inputs
+    }))
+
+    if(txOuts){
+      setTxOutputSummaries(txOuts);
+    }
+
   }
 
 
@@ -107,11 +122,19 @@ const Home: NextPage = () => {
 
     // decode block
     let block = new Block(newRawBlockInput);
-    setBlock(block);
+    // initialize the txIds in the block and then set the block state
+    block.getTransactions().forEach((tx) => {
+      tx.initializeTxId().then(() => {
+
+        let txIds = block.getTransactions()
+          .map(tx => tx.getTxId())
+        
+        setBlock(block);
+        setTxIds(txIds);
+      })
+    })
 
     let header = block.getHeader().getFields();
-
-    console.log(header);
 
     setHeader({
       version: header.version,
@@ -122,12 +145,6 @@ const Home: NextPage = () => {
       nonce: header.nonce,
     })
 
-    let txs = block.getTransactions();
-
-    Promise.all(txs.map((tx) => tx.getTxId()))
-      .then(txIds => {
-        setTxIds(txIds);
-    })
   }
 
   return (
@@ -184,7 +201,7 @@ const Home: NextPage = () => {
             <Grid2 xs={4} maxWidth="600px">
                 <TransactionOutTable 
                   setTxOutputSelected={setTxOutputSelected}
-                  txInputs={getTransactionOutput(txSelected)}
+                  txOutputs={txOutputSummaries}
                 />
             </Grid2>
           </> ) : undefined

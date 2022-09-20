@@ -1,10 +1,6 @@
 import { Table, TableCell, TableHead, TableContainer, TableBody, Paper, TablePagination, TableRow } from "@mui/material";
 import { useState } from "react";
-import Money from "../../../lib/transaction/Money";
 import ColoredMoney from "../../common/ColoredMoney";
-import { styled } from '@mui/material/styles';
-
-
 
 export type TransactionInputSummary = {
     from : string,

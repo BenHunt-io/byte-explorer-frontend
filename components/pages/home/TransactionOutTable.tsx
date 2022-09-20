@@ -2,13 +2,13 @@ import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper
 import { useState } from "react";
 import ColoredMoney from "../../common/ColoredMoney";
 
-type TransactionOutSummary = {
+export type TransactionOutSummary = {
     to : string,
     value : number
 }
 
 type TransactionOutTableProps = {
-    txInputs : TransactionOutSummary[]
+    txOutputs : TransactionOutSummary[]
     // recieve state hook to set the selected transaction input visibile to the parent componet
     setTxOutputSelected : React.Dispatch<React.SetStateAction<string | undefined>>
 }
@@ -73,7 +73,7 @@ const TransactionOutTable = (props: TransactionOutTableProps) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {createTableRows(props.txInputs)}
+                        {createTableRows(props.txOutputs)}
                     </TableBody>
                 </Table>
             </TableContainer>
