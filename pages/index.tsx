@@ -83,17 +83,7 @@ const Home: NextPage = () => {
 
     setTxSelected(txId);
 
-
-    let txIdPromises = block?.getTransactions().map((tx) => {
-      return new Promise<any>((resolve) => {
-        tx.getTxId().then(txId => resolve({txId, tx}))
-      })
-    })
-
-    // @ts-ignore
-    Promise.all<any>(txIdPromises).then((txIdPairs) => 
-      txIdPairs.find((txIdPair: any) => txIdPair.txId === txId).tx
-    ).then((selectedTx) => {
+    block?.findTransactionById(txId).then((selectedTx) => {
       let txInputSummaries = selectedTx.getTransactionInputs().map((txInput: any) => 
         ({
           from: txInput.txId,

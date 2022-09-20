@@ -29,4 +29,17 @@ export default class Block {
     public getTransactions(){
         return this.txs;
     }
+
+    public async findTransactionById(txIdTarget: string){
+
+        return Promise.all(
+            this.txs.map((tx) => 
+                new Promise<any>((resolve) => 
+                    tx.getTxId().then(txId => resolve({txId, tx}))
+                )
+            )
+        ).then(txsWithId => 
+            txsWithId.find((txWithid) => txWithid.txId === txIdTarget)
+        )
+    }    
 }

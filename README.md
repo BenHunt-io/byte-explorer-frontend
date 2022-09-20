@@ -68,3 +68,15 @@ Transactions encode the information neccessary to send value from one entity to 
 
 However, there is still an issue. How do you control the money at these addresses? How do you prevent people from spending your stored value? In the traditional bank sense, you would authenticate with your username and password before sending an ACH or other payment to another party. In bitcoin your credentials take the form of a key.
 
+## Frontend data flow in the byte explorer
+All of the components on the home page used in the byte explorer are laid out using a Grid. A consequence of this is that all of the individual components live on the same level in the DOM. The rendering of components is interdepdent starting with the transactions table.
+
+You should be able to select a transaction from the list of transactions in the block. The selected transaction should render all of the corresponding inputs and outputs for that transaction.
+
+You should then be able to select an output or input and see the breakdown of the input or output in another table.
+
+In total there is `selectedTransaction`, `selectedInput`, and `selectedOutput` state. At the root, we will have the state of the entire decoded block that will be used to populate the tables based on which selection is made.
+
+Note: It would probably simplify the code if either:
+- txId was synchronous and calculated before hand.
+- findAsync was implemented.
