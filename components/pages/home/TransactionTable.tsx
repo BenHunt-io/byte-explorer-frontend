@@ -19,10 +19,6 @@ const TransactionTable = (props: TransactionTableProps) => {
     const [page, setPage] = useState(0);
     const [selected, setSelected] = useState<string>();
 
-    useEffect(() => {
-        console.log(`Tx Table Render: ${props.txIds}`);
-    })
-
     const shortenTxId = (txId: string) => {
         return txId.slice(0, 3) + "..." + txId.slice(txId.length-3, txId.length);
     };

@@ -7,6 +7,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SpeedIcon from '@mui/icons-material/Speed';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect } from "react";
+import { Check } from "@mui/icons-material";
 
 
 type TransactionHeaderModel = {
@@ -25,51 +26,53 @@ type TransactionHeaderTableProps = {
 
 const TransactionHeaderTable = (props: TransactionHeaderTableProps) => {
 
-        useEffect(() => {
-            console.log(`Tx Header Render: ${JSON.stringify(props.txHeader)}`);
-        })
-
         return (<TableContainer component={Paper}>
             <Table size="small" aria-label="simple table">
 
                 <TableHead>
                     <TableRow>
-                        <TableCell align="center" colSpan={3}>Header</TableCell>
+                        <TableCell align="center" colSpan={4}>Header</TableCell>
                     </TableRow>
                 </TableHead>
 
                 {/* Need to evaluate if this is the right way to apply styling!! */}
                 <TableBody>
                     <TableRow>
+                        <TableCell align="center"><Check/></TableCell>
                         <TableCell align="center"><EditIcon/></TableCell>
                         <TableCell>Version</TableCell>
                         <TableCell>{props.txHeader ? props.txHeader.version : ""}</TableCell>
                     </TableRow>
 
                     <TableRow>
+                        <TableCell align="center"><Check/></TableCell>
                         <TableCell align="center"><FingerprintIcon/></TableCell>
                         <TableCell>Previous Block Header Hash</TableCell>
                         <TableCell>{props.txHeader ? props.txHeader.previousBlockHeaderHash : ""}</TableCell>
                     </TableRow>
 
                     <TableRow>
+                        <TableCell align="center"><Check/></TableCell>
                         <TableCell align="center"><FingerprintIcon/></TableCell>
                         <TableCell>Merkle Root Hash</TableCell>
                         <TableCell>{props.txHeader ? props.txHeader.merkleRootHash : ""}</TableCell>
                     </TableRow>
 
                     <TableRow>
+                        <TableCell align="center"><Check/></TableCell>
                         <TableCell align="center"><AccessTimeIcon/></TableCell>
                         <TableCell>Time</TableCell>
                         <TableCell>{props.txHeader ? props.txHeader.time.toString() : ""}</TableCell>
                     </TableRow>
 
                     <TableRow>
+                        <TableCell align="center"><Check/></TableCell>
                         <TableCell align="center"><SpeedIcon/></TableCell>
                         <TableCell>NBits</TableCell>
                         <TableCell>{props.txHeader ? props.txHeader.nBits : ""}</TableCell>
                     </TableRow>
                     <TableRow>
+                        <TableCell align="center"><Check/></TableCell>
                         <TableCell align="center"><AddIcon/></TableCell>
                         <TableCell>Nonce</TableCell>
                         <TableCell>{props.txHeader ? props.txHeader.nonce : ""}</TableCell>
