@@ -1,7 +1,7 @@
 import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper } from "@mui/material";
 import ColoredMoney from "../../common/ColoredMoney";
 
-type TransactionOutputDetail = {
+export type TransactionOutputDetail = {
     value: number
     scriptPubKey: string
     scriptPubKeySize: number
@@ -34,11 +34,11 @@ const TransactionOutDetailTable = (props: TransactionOutputDetailTableProps) => 
                             <TableCell>value</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>value={txOutDetail.scriptPubKeySize}</TableCell>
+                            <TableCell>{txOutDetail.scriptPubKeySize}</TableCell>
                             <TableCell>scriptPubKeySize</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>value={txOutDetail.scriptPubKey}</TableCell>
+                            <TableCell>{txOutDetail.scriptPubKey}</TableCell>
                             <TableCell>scriptPubKey</TableCell>
                         </TableRow>
                     </TableBody>

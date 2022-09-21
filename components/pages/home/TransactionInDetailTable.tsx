@@ -2,7 +2,7 @@ import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper
 import { useState } from "react";
 
 
-export type TransactionInput = {
+export type TransactionInputDetail = {
     txId : string,
     vOut : number,
     scriptSigSize: number,
@@ -11,7 +11,7 @@ export type TransactionInput = {
 }
 
 type TransactionInputTableProps = {
-    txInput : TransactionInput
+    txInput : TransactionInputDetail
 }
 
 const TransactionInputsTable = (props: TransactionInputTableProps) => {

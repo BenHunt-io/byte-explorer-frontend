@@ -10,7 +10,7 @@ export type TransactionOutSummary = {
 type TransactionOutTableProps = {
     txOutputs : TransactionOutSummary[]
     // recieve state hook to set the selected transaction input visibile to the parent componet
-    setTxOutputSelected : React.Dispatch<React.SetStateAction<string | undefined>>
+    onClick: (txId: string) => void
 }
 
 const TransactionOutTable = (props: TransactionOutTableProps) => {
@@ -35,7 +35,7 @@ const TransactionOutTable = (props: TransactionOutTableProps) => {
 
     const handleClickTransaction = (e: React.SyntheticEvent, txId: string) => {
         setSelected(txId);
-        props.setTxOutputSelected(txId);
+        props.onClick(txId);
     }
 
     const isSelected = (txInput : TransactionOutSummary) => txInput.to === selected;

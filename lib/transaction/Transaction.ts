@@ -211,7 +211,7 @@ export default class Transaction {
 
     getTransactionInputs()  : TxIn[] {
         return this.inputs.map((txInBuffer) => ({
-                txId : txInBuffer.txId.reverse().toString('hex'),
+                txId : reverse(txInBuffer.txId).toString('hex'),
                 vOut : txInBuffer.vOut.readUInt32LE(),
                 scriptSigSize : txInBuffer.scriptSigSize.readUInt8(),
                 scriptSig : txInBuffer.scriptSig.toString('hex'),
@@ -263,7 +263,7 @@ export default class Transaction {
     async calculateTxId(){
         if(this.rawTx){
             return MerkleTree.hashTwice(this.rawTx)
-                .then(txId => Buffer.from(txId, 'hex').reverse().toString('hex'))
+                .then(txId => reverse(Buffer.from(txId, 'hex')).toString('hex'))
         }
         return "";
     }

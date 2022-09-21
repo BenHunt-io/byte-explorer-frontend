@@ -13,8 +13,8 @@ import TransactionInTable, { TransactionInputSummary } from '../components/pages
 import TransactionOutTable, { TransactionOutSummary } from '../components/pages/home/TransactionOutTable';
 import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pages/home/TransactionHeaderTable';
 import Block from '../lib/Block';
-import TransactionOutDetailTable from '../components/pages/home/TransactionOutDetailTable';
-import TransactionInDetailTable, { TransactionInput } from '../components/pages/home/TransactionInDetailTable';
+import TransactionOutDetailTable, { TransactionOutputDetail } from '../components/pages/home/TransactionOutDetailTable';
+import TransactionInDetailTable, { TransactionInputDetail } from '../components/pages/home/TransactionInDetailTable';
 import { txInputs, txOutputs, txIds, txInDetailData, txOutDetailData, txHeaderData } from '../public/data/page/home/mock/homeData';
 import { Key } from '@mui/icons-material';
 import Transaction from '../lib/transaction/Transaction';
@@ -39,19 +39,36 @@ const darkTheme = createTheme({
   },
 });
 
+const EmptyTransactionInputDetail : TransactionInputDetail = {
+  txId: "",
+  scriptSig: "",
+  scriptSigSize: 0,
+  sequence: "",
+  vOut: 0
+}
+
+const EmptyTransactionOutputDetail : TransactionOutputDetail = {
+  scriptPubKey: "",
+  scriptPubKeySize: 0,
+  value: 0
+}
 
 
 const Home: NextPage = () => {
 
   const [rawBlockData, setRawBlockData] = React.useState<string>("");
-  const [block, setBlock] = React.useState<Block | undefined>();
+  const [block, setBlock] = React.useState<Block>();
 
   // Decoded Block Data that is displayed in the decoded table data.
   const [header, setHeader] = React.useState<TransactionHeaderModel>();
   const [txIds, setTxIds] = React.useState<string[]>([]);
   const [txInputSummaries, setTxInputSummaries] = React.useState<TransactionInputSummary[]>([]);
   const [txOutputSummaries, setTxOutputSummaries] = React.useState<TransactionOutSummary[]>([]);
+  const [txInputDetail, setTxInputDetail] = React.useState<TransactionInputDetail>(EmptyTransactionInputDetail);
+  const [txOutputDetail, setTxOutputDetail] = React.useState<TransactionOutputDetail>(EmptyTransactionOutputDetail);
 
+
+  // Selections that can be made identified by txId
   const [txSelected, setTxSelected] = React.useState<undefined | string>();
   const [txInputSelected, setTxInputSelected] = React.useState<undefined | string>();
   const [txOutputSelected, setTxOutputSelected] = React.useState<undefined | string>();
@@ -60,25 +77,48 @@ const Home: NextPage = () => {
   const isTxInputSelected = () => txInputSelected;
   const isTxOutputSelected = () => txOutputSelected;
 
-  const getTransactionInput = (txId : string | undefined) => {
-    const result = Object.entries(txInputs).find(([txIdentifier]) => txIdentifier === txId);
-    if(result){
-      return result[1];
+
+  const onTxInputSelected = (selectedInputTxId: string) => {
+
+    setTxInputSelected(selectedInputTxId);
+
+    let selectedTxInput = block?.getTransactions()
+      // Find selected tx
+      .find((tx) => tx.getTxId() === txSelected)?.getTransactionInputs()
+      // Find selected input for that tx
+      .find((tx) => tx.txId === selectedInputTxId)
+
+    if(selectedTxInput){
+      setTxInputDetail({
+        txId: selectedTxInput.txId,
+        scriptSig: selectedTxInput.scriptSig,
+        scriptSigSize: selectedTxInput.scriptSigSize,
+        sequence: selectedTxInput.sequence,
+        vOut: selectedTxInput.vOut
+      })
     }
-    return [];
   }
 
-  const getTransactionOutput = (txId : string | undefined) => {
-    const result = Object.entries(txOutputs).find(([txIdentifier]) => txIdentifier === txId);
-    if(result){
-      return result[1];
+  // Temporarily Using ScriptPubKey as a unique identifier for output selcetions
+  const onTxOutputSelected = (selectedOutputTxId: string) => {
+
+    setTxOutputSelected(selectedOutputTxId);
+
+    let selectedTxOutput = block?.getTransactions()
+      // Find selected tx
+      .find((tx) => tx.getTxId() === txSelected)?.getTransactionOutputs()
+      // Find selected input for that tx
+      .find((tx) => tx.scriptPubKey === selectedOutputTxId)
+
+    if(selectedTxOutput){
+      setTxOutputDetail({
+        scriptPubKey: selectedTxOutput.scriptPubKey,
+        scriptPubKeySize: selectedTxOutput.scriptPubKeySize,
+        value: Number(selectedTxOutput.value)
+      })
     }
-    return [];
   }
 
-  /**
-   * 
-   */
   const onTxSelected = (txId: string) => {
 
     setTxSelected(txId);
@@ -194,13 +234,13 @@ const Home: NextPage = () => {
           <>
             <Grid2 xs={4} maxWidth="600px">
                 <TransactionInTable 
-                  setTxInputSelected={setTxInputSelected}
+                  onClick={onTxInputSelected}
                   txInputs={txInputSummaries}
                 />
             </Grid2>
             <Grid2 xs={4} maxWidth="600px">
                 <TransactionOutTable 
-                  setTxOutputSelected={setTxOutputSelected}
+                  onClick={onTxOutputSelected}
                   txOutputs={txOutputSummaries}
                 />
             </Grid2>
@@ -214,7 +254,7 @@ const Home: NextPage = () => {
         { isTxInputSelected() ?
         <Grid2 xs={4} maxWidth="600px">
             <TransactionInDetailTable
-              txInput={txInDetailData}
+              txInput={txInputDetail}
             />
         </Grid2> : undefined
         }
@@ -222,7 +262,7 @@ const Home: NextPage = () => {
         { isTxOutputSelected() ? 
         <Grid2 md={4} maxWidth="600px">
             <TransactionOutDetailTable
-              txOutDetail={txOutDetailData}
+              txOutDetail={txOutputDetail}
             />
         </Grid2> : undefined
         }
