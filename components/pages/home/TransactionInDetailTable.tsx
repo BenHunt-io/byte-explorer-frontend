@@ -2,6 +2,15 @@ import { Table, TableRow, TableCell, TableHead, TableContainer, TableBody, Paper
 import { useState } from "react";
 
 
+// TxIds, ScriptSigs, and other data is too long so we need to wrap the content
+const tableStyle = {
+    "& .MuiTableCell-body": {
+        wordBreak: "break-all",
+        maxWidth: "350px",
+    },
+    size: "small"
+}
+
 export type TransactionInputDetail = {
     txId : string,
     vOut : number,
@@ -36,36 +45,32 @@ const TransactionInputsTable = (props: TransactionInputTableProps) => {
     return (
         <Paper sx={{ width: '100%'}}>
             <TableContainer>
-                <Table size="small">
+                <Table sx={tableStyle} size="small">
                     <TableHead>
                         <TableRow>
                             <TableCell colSpan={2} align="center">Input Detail</TableCell>
                         </TableRow>
-                        <TableRow >
-                            <TableCell>Value</TableCell>
-                            <TableCell>Description</TableCell>
-                        </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            <TableCell>{txInput.txId}</TableCell>
                             <TableCell>Transaction Id</TableCell>
+                            <TableCell>{txInput.txId}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>{txInput.vOut}</TableCell>
                             <TableCell>Vout</TableCell>
+                            <TableCell>{txInput.vOut}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>{txInput.scriptSigSize}</TableCell>
                             <TableCell>scriptSigSize (in bytes)</TableCell>
+                            <TableCell>{txInput.scriptSigSize}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>{txInput.scriptSig}</TableCell>
                             <TableCell>scriptSig</TableCell>
+                            <TableCell>{txInput.scriptSig}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>{txInput.sequence}</TableCell>
                             <TableCell>sequence</TableCell>
+                            <TableCell>{txInput.sequence}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

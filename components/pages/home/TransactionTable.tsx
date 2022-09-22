@@ -1,11 +1,5 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2";
-import Box from "@mui/system/Box/Box";
 import React, { useEffect, useState } from "react";
-import TransactionInputsTable from "./TransactionInDetailTable";
-import TransactionInTable from "./TransactionInTable";
-import TransactionOutputsTable from "./TransactionOutDetailTable";
-import TransactionOutTable from "./TransactionOutTable";
 
 
 type TransactionTableProps = {
@@ -35,7 +29,7 @@ const TransactionTable = (props: TransactionTableProps) => {
                         onClick={(e) => handleClickTransaction(e, txId)}
                         key={txId}
                         selected={isSelected(txId)}>
-                        <TableCell align="center">Transaction {txNum}: {shortenTxId(txId)} </TableCell>
+                        <TableCell sx={{textAlign:"center"}}>Transaction {txNum}: {shortenTxId(txId)} </TableCell>
                     </TableRow>
                 );
             });
@@ -65,7 +59,7 @@ const TransactionTable = (props: TransactionTableProps) => {
 
                     <TableHead>
                         <TableRow>
-                            <TableCell align="center">Transactions</TableCell>
+                            <TableCell>Transactions</TableCell>
                         </TableRow>
 
                     </TableHead>

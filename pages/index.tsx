@@ -15,9 +15,6 @@ import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pa
 import Block from '../lib/Block';
 import TransactionOutDetailTable, { TransactionOutputDetail } from '../components/pages/home/TransactionOutDetailTable';
 import TransactionInDetailTable, { TransactionInputDetail } from '../components/pages/home/TransactionInDetailTable';
-import { txInputs, txOutputs, txIds, txInDetailData, txOutDetailData, txHeaderData } from '../public/data/page/home/mock/homeData';
-import { Key } from '@mui/icons-material';
-import Transaction from '../lib/transaction/Transaction';
 
 
 const darkTheme = createTheme({
@@ -25,18 +22,15 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
   components: {
-    // Name of the component
+    // Center text inside header of tables.
     MuiTableCell: {
-      styleOverrides: {
-        // Name of the slot
-        root: {
-          // Some CSS
-          wordWrap: "break-word",
-          columnWidth: "160px"
-        },
-      },
-    },
-  },
+        styleOverrides: {
+          head: {
+              textAlign: "center"
+            }
+          }
+      }
+    }
 });
 
 const EmptyTransactionInputDetail : TransactionInputDetail = {
@@ -217,9 +211,9 @@ const Home: NextPage = () => {
               <TransactionHeaderTable
                 txHeader={header}
               />
-          </Grid2>
+          </Grid2> 
 
-          <Grid2 xs={12}>
+       <Grid2 xs={12}>
             <TransactionTable
               onClick={onTxSelected}
               txIds={txIds}
@@ -227,6 +221,7 @@ const Home: NextPage = () => {
           </Grid2>
         </Grid2>
 
+        
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
 
 

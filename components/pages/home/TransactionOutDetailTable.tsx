@@ -11,6 +11,15 @@ type TransactionOutputDetailTableProps = {
     txOutDetail : TransactionOutputDetail
 }
 
+// TxIds, ScriptSigs, and other data is too long so we need to wrap the content
+const tableStyle = {
+    "& .MuiTableCell-body": {
+        wordBreak: "break-all",
+        maxWidth: "350px",
+    },
+    size: "small"
+}
+
 const TransactionOutDetailTable = (props: TransactionOutputDetailTableProps) => {
 
     const {txOutDetail} = props;
@@ -18,28 +27,24 @@ const TransactionOutDetailTable = (props: TransactionOutputDetailTableProps) => 
     return (
         <Paper sx={{ width: '100%'}}>
             <TableContainer>
-                <Table size="small">
+                <Table sx={tableStyle} size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell colSpan={2} align="center">Output Detail</TableCell>
-                        </TableRow>
-                        <TableRow >
-                            <TableCell>Value</TableCell>
-                            <TableCell>Description</TableCell>
+                            <TableCell colSpan={2}>Output Detail</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            <TableCell><ColoredMoney value={txOutDetail.value}/></TableCell>
                             <TableCell>value</TableCell>
+                            <TableCell><ColoredMoney value={txOutDetail.value}/></TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>{txOutDetail.scriptPubKeySize}</TableCell>
                             <TableCell>scriptPubKeySize</TableCell>
+                            <TableCell>{txOutDetail.scriptPubKeySize}</TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell>{txOutDetail.scriptPubKey}</TableCell>
                             <TableCell>scriptPubKey</TableCell>
+                            <TableCell>{txOutDetail.scriptPubKey}</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
