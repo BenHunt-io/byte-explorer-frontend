@@ -2,6 +2,9 @@ import BlockHeader from "./BlockHeader";
 import BYOBReader from "./BYOBReader";
 import Transaction from "./transaction/Transaction";
 
+
+export type DecodingError = Map<string, string | null>;
+
 /**
  * Constructs a block from a hex string or a byte reader.
  * 
@@ -14,12 +17,17 @@ export default class Block {
     private header : BlockHeader;
     private txs : Transaction[] = [];
 
+    public static createDecodingErrorMsg = (bytesExpected: number,
+        bytesReceived: number) => `Expected to read in ${bytesExpected} bytes, but only recieved ${bytesReceived} bytes.`
+
     constructor(rawHexData : string){
         this.rawHexData = rawHexData;
         let reader = new BYOBReader(rawHexData, 'hex');
         this.header = BlockHeader.createFromReader(reader);
 
-        let txCount = reader.read(Buffer.alloc(1)).readUintBE(0, 1);
+        let txCountBuffer = Buffer.alloc(1);
+        reader.read(txCountBuffer)
+        let txCount = txCountBuffer.readUintBE(0, 1);
         
         let isCoinbaseTx = true;
         this.txs.push(Transaction.createFromReader(reader, isCoinbaseTx))

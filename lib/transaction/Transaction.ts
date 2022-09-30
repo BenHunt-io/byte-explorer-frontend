@@ -4,8 +4,6 @@ import reverse from 'buffer-reverse';
 import BYOBReader from '../BYOBReader'
 import MerkleTree from "../MerkleTree";
 
-
-
 type TxInBuffer = {
     txId : Buffer,
     vOut : Buffer,
@@ -106,10 +104,13 @@ export default class Transaction {
 
     parseTransactionBytes(reader : BYOBReader, coinbaseTx: boolean){
 
-        this.version = reader.read(Buffer.alloc(4));
+        let {buffer: version, numBytesWritten} = reader.read(Buffer.alloc(4));
+        this.version = version;
+
         // Don't know how to make my regtest node not use segwit for coinbase txs
         if(coinbaseTx){
-            this.flag = reader.read(Buffer.alloc(2));
+            let {buffer: flag, numBytesWritten} = reader.read(Buffer.alloc(2));
+            this.flag = flag;
         }
         this.parseInputs(reader);
         this.parseOutputs(reader);
@@ -124,7 +125,8 @@ export default class Transaction {
 
     parseInputs(reader : BYOBReader){
         // Number of inputs
-        this.inputCount = reader.read(Buffer.alloc(1));
+        let {buffer: inputCount, numBytesWritten} = reader.read(Buffer.alloc(1));
+        this.inputCount = inputCount
         let numInputs = this.inputCount.readUintBE(0, 1);
 
         for(let i = 0; i<numInputs; i++){
@@ -134,12 +136,12 @@ export default class Transaction {
     }
 
     parseInput(reader : BYOBReader){
-        let txIdBuffer = reader.read(Buffer.alloc(32));
-        let vOutBuffer = reader.read(Buffer.alloc(4));
-        let scriptSigSizeBuffer = reader.read(Buffer.alloc(1));
+        let {buffer: txIdBuffer} = reader.read(Buffer.alloc(32));
+        let {buffer: vOutBuffer} = reader.read(Buffer.alloc(4));
+        let {buffer: scriptSigSizeBuffer} = reader.read(Buffer.alloc(1));
         let scriptSigSize = scriptSigSizeBuffer.readUintBE(0, 1);
-        let scriptSigBuffer = reader.read(Buffer.alloc(scriptSigSize));
-        let sequenceBuffer = reader.read(Buffer.alloc(4));
+        let {buffer: scriptSigBuffer} = reader.read(Buffer.alloc(scriptSigSize));
+        let {buffer: sequenceBuffer} = reader.read(Buffer.alloc(4));
 
         this.inputs.push({
             txId : txIdBuffer,
@@ -152,7 +154,9 @@ export default class Transaction {
 
     parseOutputs(reader : BYOBReader) {
         // Number of outputs
-        this.outputCount = reader.read(Buffer.alloc(1));
+        let {buffer: outputCount} = reader.read(Buffer.alloc(1));
+        this.outputCount = outputCount;
+
         let numOutputs = this.outputCount.readUintBE(0, 1);
 
         for(let i = 0; i<numOutputs; i++){
@@ -163,11 +167,11 @@ export default class Transaction {
     parseOutput(reader : BYOBReader) {
         
         // in sats
-        let value = reader.read(Buffer.alloc(8));
-        let scriptPubKeySizeBuffer = reader.read(Buffer.alloc(1));
+        let {buffer: value} = reader.read(Buffer.alloc(8));
+        let {buffer: scriptPubKeySizeBuffer} = reader.read(Buffer.alloc(1));
         let scriptPubKeySize = scriptPubKeySizeBuffer.readUintBE(0, 1);
 
-        let scriptPubKey = reader.read(Buffer.alloc(scriptPubKeySize));
+        let {buffer: scriptPubKey} = reader.read(Buffer.alloc(scriptPubKeySize));
 
         this.outputs.push({
             value : value,
@@ -179,18 +183,18 @@ export default class Transaction {
 
     parseWitnesses(reader : BYOBReader) {
 
-        let numWitnessesBuffer = reader.read(Buffer.alloc(1));
+        let {buffer: numWitnessesBuffer} = reader.read(Buffer.alloc(1));
         let numWitnesses = numWitnessesBuffer.readUintBE(0, 1);
 
         // SegWit 1
-        this.witnessOneSizeBuffer = reader.read(Buffer.alloc(1));
+        ({buffer: this.witnessOneSizeBuffer} = reader.read(Buffer.alloc(1)));
         let witnessSize = this.witnessOneSizeBuffer.readUintBE(0, 1);
 
-        this.witnessOne = reader.read(Buffer.alloc(witnessSize));
+        ({buffer: this.witnessOne} = reader.read(Buffer.alloc(witnessSize)));
     }
 
     parseLockTime(reader : BYOBReader){
-        this.lockTime = reader.read(Buffer.alloc(4));
+        ({buffer: this.lockTime} = reader.read(Buffer.alloc(4)));
     }
 
     getVersion(){
@@ -242,10 +246,10 @@ export default class Transaction {
                 size : this.witnessOneSizeBuffer?.readUIntBE(0, 1),
                 witness : this.witnessOne?.toString('hex')
             },
-            {
-                size : this.witnessTwoSizeBuffer?.readUintBE(0, 1),
-                witness : this.witnessTwo?.toString('hex')
-            }
+            // {
+            //     size : this.witnessTwoSizeBuffer?.readUintBE(0, 1),
+            //     witness : this.witnessTwo?.toString('hex')
+            // }
         ]
     }
 

@@ -1,5 +1,11 @@
 
-
+/**
+ * Response given after reading bytes into a buffer.
+ */
+type ReadResponse = {
+    numBytesWritten : number
+    buffer: Buffer // Buffer that bytes were written
+}
 
 // Reads bytes from string input. Can select what encoding the string is in that is supported
 // by the Buffer API.
@@ -12,12 +18,19 @@ export default class BYOBReader {
         this.buffer = Buffer.from(data, encoding);
     }
 
-    read(buffer : Buffer) : Buffer {
+  
+    /**
+     * @param buffer the buffer to write bytes into
+     */
+    read(buffer : Buffer) : ReadResponse {
 
-        this.buffer.copy(buffer, 0, 0, buffer.length);
+        let numBytesWritten = this.buffer.copy(buffer, 0, 0, buffer.length);
         this.buffer = this.buffer.subarray(buffer.length, this.buffer.length);
 
-        return buffer;
+        return {
+            numBytesWritten,
+            buffer
+        };
         
     }
 

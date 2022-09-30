@@ -1,3 +1,9 @@
+/**
+ *
+ * Dummy Data Used to stub out components on the home page.
+ * 
+**/
+
 // Transaction Header Table Data
 const txHeaderData = {
     version: 2,
@@ -135,5 +141,14 @@ const txIds = [
     sequence: "ffffffff"
   }
 
+  const errors = {
+    blockHeaderVersion : {},
+    merkleTreeHash: {},
+    previousBlockHeaderHash: {},
+    difficultyBits: {
+      reason: "Invalid Hexidecimal Characters"
+    }
+  }
+  
 
   export {txHeaderData, txIds, txInputs, txOutputs, txInDetailData, txOutDetailData};
