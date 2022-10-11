@@ -5,7 +5,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Collapse, createTheme, CssBaseline, Icon, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
+import { Button, Collapse, createTheme, CssBaseline, Icon, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
 import React, { useEffect } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import TransactionTable from '../components/pages/home/TransactionTable';
@@ -47,7 +47,9 @@ const EmptyTransactionOutputDetail : TransactionOutputDetail = {
   value: 0
 }
 
-
+/**
+ * This function component renders all the components you see on the home page.
+ */
 const Home: NextPage = () => {
 
   const [rawBlockData, setRawBlockData] = React.useState<string>("");
@@ -70,6 +72,24 @@ const Home: NextPage = () => {
   const isTxSelected = () => txSelected;
   const isTxInputSelected = () => txInputSelected;
   const isTxOutputSelected = () => txOutputSelected;
+
+  // This "hook" or function gets called every time this component renders. (includes everytime it updates)
+  useEffect(() => {
+    /**
+     * 1. Fetch Data From NestJS
+     * 2. Set state that will be used for select menu
+     *    - Note that the display for the select items differ from what they represent.
+     *    - Ex: the string "Block  2021-05-15 05:00:00" corresponds to an entire block of data.
+     *    - You'll probably need to create a map to handle this.
+     */
+  })
+
+  const onSaveClick = (e : React.SyntheticEvent) => {
+    /**
+     * Function for implementing what happens when you click the save button.
+     * Note that these two functions are just acting as starter pact. You are not limited to these two functions.
+     */
+  }
 
 
   const onTxInputSelected = (selectedInputTxId: string) => {
@@ -190,6 +210,23 @@ const Home: NextPage = () => {
         <Grid2 xs={4} textAlign="center">
           <h1>Bitcoin Byte Explorer</h1>
         </Grid2>
+        <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+
+        <Grid2 container xs={12}>
+          <Grid2 xsOffset={2} xs={2}>
+              {/* 
+                  FOR JAY:
+                  SELECT MENU
+              */}
+          </Grid2>
+          <Grid2 xs={2}>
+              {/* 
+                  FOR JAY:
+                  BUTTON
+              */}
+          </Grid2>
+        </Grid2>
+
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
 
 
