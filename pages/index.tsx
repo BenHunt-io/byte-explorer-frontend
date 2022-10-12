@@ -5,7 +5,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Collapse, createTheme, CssBaseline, Icon, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
+import { Button, Collapse, createTheme, CssBaseline, FormControl, Icon, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
 import React, { useEffect } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import TransactionTable from '../components/pages/home/TransactionTable';
@@ -182,6 +182,7 @@ const Home: NextPage = () => {
   }
 
   return (
+
     <ThemeProvider theme={darkTheme}>
       <CssBaseline/>
 
@@ -191,8 +192,6 @@ const Home: NextPage = () => {
           <h1>Bitcoin Byte Explorer</h1>
         </Grid2>
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
-
-
         <Grid2 maxWidth="600px" xs={4}>
           <TextField
             value={rawBlockData}
@@ -205,15 +204,20 @@ const Home: NextPage = () => {
           />
         </Grid2>
 
-
         <Grid2 container xs={4} maxWidth="624px">
           <Grid2 xs={12}>
+          <Button variant="contained" onClick={() => {alert('Saved');}}>Save</Button>
+          <FormControl fullWidth>
+    
+  <InputLabel id="demo-simple-select-label">Age</InputLabel>
+</FormControl>
               <TransactionHeaderTable
                 txHeader={header}
               />
           </Grid2> 
 
        <Grid2 xs={12}>
+        
             <TransactionTable
               onClick={onTxSelected}
               txIds={txIds}
