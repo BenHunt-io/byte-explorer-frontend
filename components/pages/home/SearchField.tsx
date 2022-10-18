@@ -29,8 +29,17 @@ const SearchField = (props : any) => {
     }
 
     const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
+
+        let queryParams = "";
+        if(isHashQueryParam(input)){
+            queryParams = `blockHash=${input}`;
+        }
+        else{
+            queryParams = `blockHeight=${input}`;
+        }
+
         if(e.key == "Enter"){
-            fetch(`http://localhost:3000/blockchain/block?blockHash=${input}`)
+            fetch(`http://localhost:3000/blockchain/block?${queryParams}`)
                 .then(
                     response => {
                         if(response.ok){
@@ -56,6 +65,9 @@ const SearchField = (props : any) => {
                 })
         }
     }
+
+    const isHashQueryParam = (input: string) => Number(input) == NaN;
+    
 
     const createAlert = (reason: SearchResultStatus) => {
         if(reason == 'NOT_FOUND'){
