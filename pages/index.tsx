@@ -81,14 +81,21 @@ const Home: NextPage = () => {
      *    - Note that the display for the select items differ from what they represent.
      *    - Ex: the string "Block  2021-05-15 05:00:00" corresponds to an entire block of data.
      *    - You'll probably need to create a map to handle this.
+     *    this is where you will save the data from fetching into variables 
      */
   })
 
-  const onSaveClick = (e : React.SyntheticEvent) => {
+  const onSaveClick = async () => {
     /**
      * Function for implementing what happens when you click the save button.
-     * Note that these two functions are just acting as starter pact. You are not limited to these two functions.
      */
+     let response = await fetch('http://209.182.236.17/history/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json '
+      },
+      body: JSON.stringify({data: rawBlockData, type: "header"})
+    });
   }
 
 
@@ -221,16 +228,7 @@ const Home: NextPage = () => {
           </Grid2>
           <Grid2 xs={2}>
               { 
-                  <Button variant="contained" onClick={async () => {
-                    let response = await fetch('http://209.182.236.17/history/save', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json '
-                      },
-                      body: JSON.stringify({data:'????', type: "?????"})
-                    });
-                    alert('clicked');
-                  }}>Save</Button>
+                  <Button variant="contained" onClick={async () => {onSaveClick();}}>Save</Button>
               }
           </Grid2>
         </Grid2>
