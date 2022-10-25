@@ -220,10 +220,18 @@ const Home: NextPage = () => {
               */}
           </Grid2>
           <Grid2 xs={2}>
-              {/* 
-                  FOR JAY:
-                  BUTTON
-              */}
+              { 
+                  <Button variant="contained" onClick={async () => {
+                    let response = await fetch('http://209.182.236.17/history/save', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json '
+                      },
+                      body: JSON.stringify({data:'????', type: "?????"})
+                    });
+                    alert('clicked');
+                  }}>Save</Button>
+              }
           </Grid2>
         </Grid2>
 
