@@ -1,12 +1,15 @@
 import { Alert, Snackbar, TextField } from "@mui/material"
 import React, { useState } from "react";
+import ByteExplorerClient from "../../../lib/client/ByteExplorerClient";
+
 
 type SearchFieldProps = {
     handleResult: (rawBlockData: string) => void;
 }
 
-
 type SearchResultStatus = 'SERVER_ERROR' | 'NOT_FOUND' | undefined;
+
+const client = new ByteExplorerClient();
 
 /**
  * This search field is not responsible for managing the results of the search.
@@ -20,6 +23,7 @@ const SearchField = (props : any) => {
     const [showNotification, setShowNotification] = useState(false);
     const [searchResultStatus, setSearchResultStatus] = useState<SearchResultStatus>();
 
+
     const onChange = (e : React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setInput(e.target.value);
     }
@@ -30,17 +34,16 @@ const SearchField = (props : any) => {
 
     const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
 
-        let queryParams = "";
+        let promise = null;
         if(isHashQueryParam(input)){
-            queryParams = `blockHash=${input}`;
+            promise = client.findBlockData({blockHash: input});
         }
         else{
-            queryParams = `blockHeight=${input}`;
+            promise = client.findBlockData({blockHeight: input});
         }
 
         if(e.key == "Enter"){
-            fetch(`http://localhost:3000/blockchain/block?${queryParams}`)
-                .then(
+            promise.then(
                     response => {
                         if(response.ok){
                             return response.text();
@@ -66,7 +69,7 @@ const SearchField = (props : any) => {
         }
     }
 
-    const isHashQueryParam = (input: string) => Number(input) == NaN;
+    const isHashQueryParam = (input: string) => !Number.isInteger(Number.parseInt(input));
     
 
     const createAlert = (reason: SearchResultStatus) => {

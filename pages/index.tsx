@@ -191,18 +191,20 @@ const Home: NextPage = () => {
 
       <Grid2 container justifyContent="center" sx={{marginTop: 15}} spacing={3}>
 
-        <Grid2 xs={8}>
+        <Grid2 xs={4} textAlign="center" >
+          <h1>Bitcoin Byte Explorer</h1>
+        </Grid2>
+
+        <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+
+        <Grid2 xs={8} maxWidth="1200px">
           <SearchField
             handleResult={handleSearchResult}
           />
         </Grid2>
 
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
-
-        <Grid2 xs={4} textAlign="center">
-          {/* <h1>Bitcoin Byte Explorer</h1> */}
-        </Grid2>
-        <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+        
         <Grid2 maxWidth="600px" xs={4}>
           <TextField
             value={rawBlockData}
