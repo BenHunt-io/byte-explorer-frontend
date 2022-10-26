@@ -15,6 +15,7 @@ import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pa
 import Block from '../lib/Block';
 import TransactionOutDetailTable, { TransactionOutputDetail } from '../components/pages/home/TransactionOutDetailTable';
 import TransactionInDetailTable, { TransactionInputDetail } from '../components/pages/home/TransactionInDetailTable';
+import SearchField from '../components/pages/home/SearchField';
 
 
 const darkTheme = createTheme({
@@ -148,9 +149,7 @@ const Home: NextPage = () => {
   /**
    * Changes to the block data input field
    */
-  const handleBlockDataInputChange = (e : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-
-    let newRawBlockInput = e.currentTarget.value;
+  const handleBlockDataInputChange = (newRawBlockInput : string) => {
         
     setRawBlockData(newRawBlockInput);
 
@@ -181,6 +180,10 @@ const Home: NextPage = () => {
 
   }
 
+  const handleSearchResult = (rawBlockData : string) => {
+    handleBlockDataInputChange(rawBlockData);
+  }
+
   return (
 
     <ThemeProvider theme={darkTheme}>
@@ -188,14 +191,24 @@ const Home: NextPage = () => {
 
       <Grid2 container justifyContent="center" sx={{marginTop: 15}} spacing={3}>
 
-        <Grid2 xs={4} textAlign="center">
+        <Grid2 xs={4} textAlign="center" >
           <h1>Bitcoin Byte Explorer</h1>
         </Grid2>
+
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+
+        <Grid2 xs={8} maxWidth="1200px">
+          <SearchField
+            handleResult={handleSearchResult}
+          />
+        </Grid2>
+
+        <Grid2 xs={12} padding="0px 0px 0px 0px"/>
+        
         <Grid2 maxWidth="600px" xs={4}>
           <TextField
             value={rawBlockData}
-            onChange={(e) => handleBlockDataInputChange(e)}
+            onChange={(e) => handleBlockDataInputChange(e.currentTarget.value)}
             label="Block Data"
             fullWidth
             multiline
@@ -206,11 +219,6 @@ const Home: NextPage = () => {
 
         <Grid2 container xs={4} maxWidth="624px">
           <Grid2 xs={12}>
-          <Button variant="contained" onClick={() => {alert('Saved');}}>Save</Button>
-          <FormControl fullWidth>
-    
-  <InputLabel id="demo-simple-select-label">Age</InputLabel>
-</FormControl>
               <TransactionHeaderTable
                 txHeader={header}
               />

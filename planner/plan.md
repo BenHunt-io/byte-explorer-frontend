@@ -71,3 +71,22 @@ Could also use a Map<string, string | null> here so that I can enforce the types
 }
 ```
 
+## Search Field
+
+I want to be able to search for raw block data by block height or block hash.
+I can use a standard MUI TextField component to do this.
+
+1. Take search input from the user, this will live as state in the SearchField component.
+2. Upon pressing enter, we should make an async call to fetch the data from GetBlock.io
+3. The returned data will not be saved in the search field. Rather, a callback can be passed to the SearchField component as a prop
+to decide what to do with the queried data.
+
+There needs to be some logic that determines the type of the input, either block height or block hash. When the input is just numbers between the range of (1-chainHeight), it is a search based on the height. Otherwise it is a search based on hash.
+
+Search Result:
+ - Not found: Display informational message, "Block data in Mainnet not found for {queryArgName}: {queryArgValue}"
+ - Connection issue: display error message, "Search is currently having issues. Please try again later."
+ - Successful Result: No need to do snackbar, result will be pasted into the block input field.
+
+
+
