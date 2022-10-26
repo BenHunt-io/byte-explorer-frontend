@@ -94,7 +94,7 @@ const Home: NextPage = () => {
       headers: {
         'Content-Type': 'application/json '
       },
-      body: JSON.stringify({data: rawBlockData, type: "header"})
+      body: JSON.stringify({data: rawBlockData, type: "BLOCK"})
     });
   }
 
@@ -228,7 +228,7 @@ const Home: NextPage = () => {
           </Grid2>
           <Grid2 xs={2}>
               { 
-                  <Button variant="contained" onClick={async () => {onSaveClick();}}>Save</Button>
+                  <Button variant="outlined" onClick={onSaveClick}>Save</Button>
               }
           </Grid2>
         </Grid2>
