@@ -5,6 +5,7 @@ import ByteExplorerClient from "../../../lib/client/ByteExplorerClient";
 
 type SearchFieldProps = {
     handleResult: (rawBlockData: string) => void;
+    chain : string;
 }
 
 type SearchResultStatus = 'SERVER_ERROR' | 'NOT_FOUND' | undefined;
@@ -17,7 +18,7 @@ const client = new ByteExplorerClient();
  * It is just responsible for fetching results based on inputs and delegating
  * the results to some handler.
  */
-const SearchField = (props : any) => {
+const SearchField = (props : SearchFieldProps) => {
 
     const [input, setInput] = useState("");
     const [showNotification, setShowNotification] = useState(false);
@@ -34,39 +35,41 @@ const SearchField = (props : any) => {
 
     const handleSearch = (e: React.KeyboardEvent<HTMLDivElement>) => {
 
+        if(e.key != "Enter"){
+            return;
+        }
+
         let promise = null;
         if(isHashQueryParam(input)){
-            promise = client.findBlockData({blockHash: input});
+            promise = client.findBlockData({blockHash: input}, props.chain);
         }
         else{
-            promise = client.findBlockData({blockHeight: input});
+            promise = client.findBlockData({blockHeight: input}, props.chain);
         }
 
-        if(e.key == "Enter"){
-            promise.then(
-                    response => {
-                        if(response.ok){
-                            return response.text();
-                        }
-                    
-                        throw new Error();
+        promise.then(
+                response => {
+                    if(response.ok){
+                        return response.text();
                     }
-                )
-                .then((rawBlockData : string) => { 
-                    if(rawBlockData){
-                        props.handleResult(rawBlockData)
-                    }
-                    else{
-                        setSearchResultStatus('NOT_FOUND')
-                        setShowNotification(true);
-                    }
-
-                })
-                .catch(exception => {
-                    setSearchResultStatus('SERVER_ERROR')
+                
+                    throw new Error();
+                }
+            )
+            .then((rawBlockData : string) => { 
+                if(rawBlockData){
+                    props.handleResult(rawBlockData)
+                }
+                else{
+                    setSearchResultStatus('NOT_FOUND')
                     setShowNotification(true);
-                })
-        }
+                }
+
+            })
+            .catch(exception => {
+                setSearchResultStatus('SERVER_ERROR')
+                setShowNotification(true);
+            })
     }
 
     const isHashQueryParam = (input: string) => !Number.isInteger(Number.parseInt(input));
@@ -89,7 +92,7 @@ const SearchField = (props : any) => {
                 placeholder="Search for block data by block height or block hash"
                 value={input}
                 onChange={(e) => onChange(e)}
-                onKeyDown={(e) => handleSearch(e)}
+                onKeyDown={(e : React.KeyboardEvent<HTMLDivElement>) => handleSearch(e)}
             />
             <Snackbar 
                 open={showNotification} 

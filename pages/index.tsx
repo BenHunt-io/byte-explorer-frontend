@@ -5,7 +5,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Button, Collapse, createTheme, CssBaseline, FormControl, Icon, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
+import { Button, Collapse, createTheme, CssBaseline, FormControl, Icon, IconButton, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import React, { useEffect } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import TransactionTable from '../components/pages/home/TransactionTable';
@@ -53,6 +53,9 @@ const Home: NextPage = () => {
 
   const [rawBlockData, setRawBlockData] = React.useState<string>("");
   const [block, setBlock] = React.useState<Block>();
+
+  // Configuration
+  const [chain, setChain] = React.useState<string>("main");
 
   // Decoded Block Data that is displayed in the decoded table data.
   const [header, setHeader] = React.useState<TransactionHeaderModel>();
@@ -197,10 +200,26 @@ const Home: NextPage = () => {
 
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
 
-        <Grid2 xs={8} maxWidth="1200px">
-          <SearchField
-            handleResult={handleSearchResult}
-          />
+        <Grid2 container xs={8} maxWidth="1224px">
+          <Grid2 xs={10}>
+            <SearchField
+              handleResult={handleSearchResult}
+              chain={chain}
+            />
+          </Grid2>
+
+          {/* Toggle between chains */}
+          <Grid2 xs={2}>
+            <ToggleButtonGroup
+                exclusive
+                fullWidth
+                style={{height:"100%"}}
+                value={chain}
+                onChange={(e : React.MouseEvent<HTMLElement>, value: string) => setChain(value)}>
+                <ToggleButton value="main">Main</ToggleButton>
+                <ToggleButton value="test">Test</ToggleButton>
+              </ToggleButtonGroup>
+          </Grid2>
         </Grid2>
 
         <Grid2 xs={12} padding="0px 0px 0px 0px"/>
