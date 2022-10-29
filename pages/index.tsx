@@ -5,7 +5,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Button, Collapse, createTheme, CssBaseline, Icon, IconButton, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
+import { Autocomplete, Button, Collapse, createTheme, CssBaseline, FormControl, Icon, IconButton, InputLabel, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, TextFieldPropsSizeOverrides } from '@mui/material';
 import React, { useEffect } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import TransactionTable from '../components/pages/home/TransactionTable';
@@ -15,6 +15,7 @@ import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pa
 import Block from '../lib/Block';
 import TransactionOutDetailTable, { TransactionOutputDetail } from '../components/pages/home/TransactionOutDetailTable';
 import TransactionInDetailTable, { TransactionInputDetail } from '../components/pages/home/TransactionInDetailTable';
+import { SelectAllRounded, WorkHistory } from '@mui/icons-material';
 
 
 const darkTheme = createTheme({
@@ -72,9 +73,20 @@ const Home: NextPage = () => {
   const isTxSelected = () => txSelected;
   const isTxInputSelected = () => txInputSelected;
   const isTxOutputSelected = () => txOutputSelected;
+  const [history, setHistory] = React.useState<object[]>([]);
+  const [selected, setSelected] = React.useState<string>();
+//******************************************************************************** *//
+ 
 
+
+//-------------------------------------------------------------------------------
   // This "hook" or function gets called every time this component renders. (includes everytime it updates)
   useEffect(() => {
+    function transformToJson(response : any){
+      return response.json()
+    }
+
+    
     /**
      * 1. Fetch Data From NestJS
      * 2. Set state that will be used for select menu
@@ -83,8 +95,42 @@ const Home: NextPage = () => {
      *    - You'll probably need to create a map to handle this.
      *    this is where you will save the data from fetching into variables 
      */
-  })
+    let response = fetch('https://api.byteexplorer.com/history/gethistory')
+    .then(response => response.json())
+    //.then(transformToJson)
+    .then( workHistory => {
+      let tempHistory = [];
+      
+      for(let i = 0; i < workHistory.length; i++){
+        let workEntry = {
+          state: workHistory[i].id,
+          view: workHistory[i].creationtime
+        }
+        tempHistory.push(workEntry)
+        
+      }
+      
+      setHistory(tempHistory);
+      console.log(tempHistory)
+    })
 
+  },[]
+  )
+  function generateMenuItems(){
+    console.log(history);
+    let menuList = [];
+    for(let i = 0; i < history.length;i++){
+      menuList.push(
+        //@ts-ignore
+       <MenuItem value={history[i].state}>{history[i].view}</MenuItem>
+      );
+    }
+    return menuList;
+  }
+ /* function alertJson(response: any){
+    alert(commits[0].author.login));
+  }
+*/
   const onSaveClick = async () => {
     /**
      * Function for implementing what happens when you click the save button.
@@ -221,14 +267,27 @@ const Home: NextPage = () => {
 
         <Grid2 container xs={12}>
           <Grid2 xsOffset={2} xs={2}>
-              {/* 
-                  FOR JAY:
-                  SELECT MENU
-              */}
+        
+                <InputLabel id="demo-simple-select-label">History</InputLabel>
+                <Select fullWidth
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={selected}
+                  label="History"
+                  onChange={
+                    (e: any) =>{
+                      setSelected(e.target.value)
+                    }
+                  }
+
+                >
+                  {generateMenuItems()}
+                </Select>
+            
           </Grid2>
           <Grid2 xs={2}>
               { 
-                  <Button variant="outlined" onClick={onSaveClick}>Save</Button>
+                <Button variant="outlined" onClick={onSaveClick}>Save</Button>
               }
           </Grid2>
         </Grid2>
