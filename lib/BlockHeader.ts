@@ -1,12 +1,8 @@
 import { Buffer } from 'buffer';
 import reverse from 'buffer-reverse';
-import { randomBytes } from 'crypto';
 import Block, { DecodingError } from './Block';
 import BYOBReader from './BYOBReader';
 
-/**
- * These header fields are not optional, but typescript does not recoginze them being set in the constructor
- */
 export default class BlockHeader {
 
     private rawHexData? : string;
@@ -117,9 +113,6 @@ export default class BlockHeader {
             this.errors.set("bits", null);
         }
     }
-
-
-
 
     parseVersion(){
         return this.version.readUInt32LE()
