@@ -12,10 +12,10 @@ import TransactionTable from '../components/pages/home/TransactionTable';
 import TransactionInTable, { TransactionInputSummary } from '../components/pages/home/TransactionInTable';
 import TransactionOutTable, { TransactionOutSummary } from '../components/pages/home/TransactionOutTable';
 import {TransactionHeaderTable,  TransactionHeaderModel } from '../components/pages/home/TransactionHeaderTable';
-import Block from '../lib/Block';
 import TransactionOutDetailTable, { TransactionOutputDetail } from '../components/pages/home/TransactionOutDetailTable';
 import TransactionInDetailTable, { TransactionInputDetail } from '../components/pages/home/TransactionInDetailTable';
 import SearchField from '../components/pages/home/SearchField';
+import { Block } from '../lib/block/Block';
 
 
 const darkTheme = createTheme({
@@ -82,17 +82,17 @@ const Home: NextPage = () => {
 
     let selectedTxInput = block?.getTransactions()
       // Find selected tx
-      .find((tx) => tx.getTxId() === txSelected)?.getTransactionInputs()
+      .find((tx) => tx.getTxId() === txSelected)?.getInputs()
       // Find selected input for that tx
-      .find((tx) => tx.txId === selectedInputTxId)
+      .find((tx) => tx.getTransactionId() === selectedInputTxId)
 
     if(selectedTxInput){
       setTxInputDetail({
-        txId: selectedTxInput.txId,
-        scriptSig: selectedTxInput.scriptSig,
-        scriptSigSize: selectedTxInput.scriptSigSize,
-        sequence: selectedTxInput.sequence,
-        vOut: selectedTxInput.vOut
+        txId: selectedTxInput.getTransactionId(),
+        scriptSig: selectedTxInput.getScript(),
+        scriptSigSize: selectedTxInput.getScriptSize(),
+        sequence: selectedTxInput.getSequence(),
+        vOut: selectedTxInput.getVOut()
       })
     }
   }
@@ -104,15 +104,15 @@ const Home: NextPage = () => {
 
     let selectedTxOutput = block?.getTransactions()
       // Find selected tx
-      .find((tx) => tx.getTxId() === txSelected)?.getTransactionOutputs()
+      .find((tx) => tx.getTxId() === txSelected)?.getOutputs()
       // Find selected input for that tx
-      .find((tx) => tx.scriptPubKey === selectedOutputTxId)
+      .find((tx) => tx.getScriptPubKey() === selectedOutputTxId)
 
     if(selectedTxOutput){
       setTxOutputDetail({
-        scriptPubKey: selectedTxOutput.scriptPubKey,
-        scriptPubKeySize: selectedTxOutput.scriptPubKeySize,
-        value: Number(selectedTxOutput.value)
+        scriptPubKey: selectedTxOutput.getScriptPubKey(),
+        scriptPubKeySize: selectedTxOutput.getScriptPubKeySize(),
+        value: Number(selectedTxOutput.getValue())
       })
     }
   }
@@ -124,9 +124,9 @@ const Home: NextPage = () => {
 
     // Find and set transaction inputs
     let txIns = block?.getTransactions()
-      .find(tx => tx.getTxId() === txId)?.getTransactionInputs()
+      .find(tx => tx.getTxId() === txId)?.getInputs()
       .map(selectedTx => ({
-        from: selectedTx.txId,
+        from: selectedTx.getTransactionId(),
         value: 0 // need to query blockchain for actual txValue for inputs
       }))
 
@@ -136,10 +136,10 @@ const Home: NextPage = () => {
 
     // Find and set transaction outputs
     let txOuts = block?.getTransactions()
-      .find(tx => tx.getTxId() === txId)?.getTransactionOutputs()
+      .find(tx => tx.getTxId() === txId)?.getOutputs()
       .map(selectedTx => ({
-        to: selectedTx.scriptPubKey, // need to extract out the txId from script
-        value: Number(selectedTx.value) // need to query blockchain for actual txValue for inputs
+        to: selectedTx.getScriptPubKey(), // need to extract out the txId from script
+        value: Number(selectedTx.getValue()) // need to query blockchain for actual txValue for inputs
     }))
 
     if(txOuts){
@@ -157,7 +157,7 @@ const Home: NextPage = () => {
     setRawBlockData(newRawBlockInput);
 
     // decode block
-    let block = new Block(newRawBlockInput);
+    let block = Block.parse(newRawBlockInput);
     // initialize the txIds in the block and then set the block state
     block.getTransactions().forEach((tx) => {
       tx.initializeTxId().then(() => {
@@ -170,15 +170,15 @@ const Home: NextPage = () => {
       })
     })
 
-    let header = block.getHeader().getFields();
+    let header = block.getHeader();
 
     setHeader({
-      version: header.version,
-      previousBlockHeaderHash: header.previousBlockHash,
-      merkleRootHash: header.merkleRoot,
-      time: new Date(header.time*1000),
-      nBits: header.bits,
-      nonce: header.nonce,
+      version: header.getVersion(),
+      previousBlockHeaderHash: header.getPreviousBlockHash(),
+      merkleRootHash: header.getMerkleRootHash(),
+      time: new Date(header.getTime()*1000),
+      nBits: header.getBits(),
+      nonce: header.getNonce(),
     })
 
   }
