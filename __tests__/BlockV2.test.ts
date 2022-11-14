@@ -1,4 +1,4 @@
-import { Block } from '../lib/block/Block';
+import { Block } from '../lib/blockchain/Block';
 import reverse from 'buffer-reverse';
 import { Buffer } from 'buffer';
 

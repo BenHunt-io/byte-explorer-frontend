@@ -2,7 +2,7 @@ import { Encoding, subtle } from "node:crypto";
 import { Buffer } from 'buffer';
 import reverse from 'buffer-reverse';
 import BYOBReader from '../BYOBReader'
-import MerkleTree from "../MerkleTree";
+import MerkleTree from "../blockchain/MerkleTree";
 
 type TxInBuffer = {
     txId : Buffer,

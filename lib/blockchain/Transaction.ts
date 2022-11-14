@@ -1,7 +1,7 @@
 import BYOBReader from "../BYOBReader";
 import { Buffer } from 'buffer';
 import reverse from 'buffer-reverse';
-import MerkleTree from "../MerkleTree";
+import MerkleTree from "./MerkleTree";
 
 type TransactionBuffer = {
     version : Buffer
@@ -27,7 +27,6 @@ type TransactionOutputBuffer = {
 }
 
 export class Transaction {
-
 
     private txBuffer : TransactionBuffer;
     private rawTx?: string;
